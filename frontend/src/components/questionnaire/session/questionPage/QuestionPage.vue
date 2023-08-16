@@ -42,9 +42,9 @@
 import CardAnswer from './answer_types/CardAnswer.vue';
 import ButtonAnswer from './answer_types/ButtonAnswer.vue';
 import SliderAnswer from './answer_types/SliderAnswer.vue';
-import Button from '../../custom/Button.vue';
+import Button from '../../../custom/Button.vue';
 import { ref, watch } from 'vue';
-import { QuestionPageType, AnswerOptionType, NavigationTreeItemType } from '../../../types/types';
+import { QuestionPageType, AnswerOptionType, NavigationTreeItemType } from '../../../../types/types';
 
 
 
@@ -64,14 +64,14 @@ const temporaryAnswer = ref<AnswerOptionType>();
 
 //init temporary answer
 const page = props.page;
-if (page && page.answer && page.answer.value && page.content.answerOptions && page.content.answerOptions.options) {
-    temporaryAnswer.value = page.content.answerOptions.options.find(option => option.value === page.answer.value);
+if (page && page.questionnaireUserSessionAnswers && page.questionnaireUserSessionAnswers.value && page.content.answerOptions && page.content.answerOptions.options) {
+    temporaryAnswer.value = page.content.answerOptions.options.find(option => option.value === page.questionnaireUserSessionAnswers.value);
 }
 
 watch(props.page, (newValue, _oldValue) => {
     const page = newValue;
-    if (page && page.answer && page.answer.value && page.content.answerOptions && page.content.answerOptions.options) {
-        temporaryAnswer.value = page.content.answerOptions.options.find(option => option.value === page.answer.value);
+    if (page && page.questionnaireUserSessionAnswers && page.questionnaireUserSessionAnswers.value && page.content.answerOptions && page.content.answerOptions.options) {
+        temporaryAnswer.value = page.content.answerOptions.options.find(option => option.value === page.questionnaireUserSessionAnswers.value);
     }
 });
 

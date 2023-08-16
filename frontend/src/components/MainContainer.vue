@@ -1,5 +1,5 @@
 <template>
-    <div class="flex-grow overflow-y-auto">
+    <div class="flex-auto relative overflow-y-auto">
         <slot name="content"></slot>
     </div>
 </template>
@@ -8,6 +8,4 @@
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -30,11 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import Button from '../../custom/Button.vue';
+import Button from '../../../custom/Button.vue';
 import CardRecommendation from './recommendation_types/CardRecommendation.vue'
-import { QuestionPageType, RecommendationOptionType, ResultPageType } from '../../../types/types';
+import { QuestionPageType, RecommendationOptionType, ResultPageType } from '../../../../types/types';
 import { ref } from 'vue';
-import { getRecommendedProducts } from '../../../services/RecommendationModel';
+import { getRecommendedProducts } from '../../../../services/RecommendationModel';
 
 
 

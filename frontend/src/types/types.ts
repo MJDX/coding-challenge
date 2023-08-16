@@ -62,7 +62,7 @@ export type QuestionPageType =
                 ]
             }
         },
-        answer: AnswerType
+        questionnaireUserSessionAnswers: QuestionnaireUserSessionAnswer[]
     };
 
 export type QuestionnaireType =
@@ -77,12 +77,24 @@ export type QuestionnaireType =
 
 export type NavigationTreeItemType = {
     label: string,
-    selectedAnswer: AnswerType,
+    selectedAnswer: QuestionnaireUserSessionAnswer,
     pageName: string
     pageId: number
 }
-export type AnswerType = {
+
+export type QuestionnaireUserSession = {
     id: number
+    title: string
+    userId: number
+    sharable: boolean
+    questionnaireId: number
+    questionnaireUserSessionAnswers: QuestionnaireUserSessionAnswer[]
+};
+
+export type QuestionnaireUserSessionAnswer = {
+    id: number
+    questionnaireUserSessionId: number
+    questionPageId: number
     value: string
 };
 
