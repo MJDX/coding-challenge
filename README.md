@@ -83,3 +83,62 @@ const httpLink = createHttpLink({
   fetch,
 });
 ```
+
+## Recommendation Logic
+- the recommendation logic is based on a recommendation matrix, where each column of the matrix is linked to the product to be recommended where each cell of this column is mapped to each response of each question, the value of the cell signifies depending on the answer selected by the user : if the user selects this answer and the cell has **(1)** as the value it means the product can be recommended , but if the cell has **(0)** it means the product can't be recommended due to the fact the user selected this answer
+- this logic is translated into the following json structure, an extract column from the matrix implemented in data.json file for the product named "Paint bucket 15L white" :
+```
+{
+    "label": "Paint bucket 15L white",
+    "value": "PaintBucket15LWhite",
+    "image": "",
+    "recommendationMatrixColumn": [
+        {
+            "pageName": "applicationScopePage",
+            "answers": [
+                "Outdoor",
+                "Indoor"
+            ]
+        },
+        {
+            "pageName": "surfaceType",
+            "answers": [
+                "Wood",
+                "Mat",
+                "Facade",
+                "Plaster"
+            ]
+        },
+        {
+            "pageName": "opacity",
+            "answers": [
+                "Yes",
+                "No"
+            ]
+        },
+        {
+            "pageName": "opacity2",
+            "answers": [
+                "<95%",
+                "95%",
+                "98%",
+                ">99.5%"
+            ]
+        },
+        {
+            "pageName": "undercoat",
+            "answers": [
+                "Brighter",
+                "Darker"
+            ]
+        },
+        {
+            "pageName": "hue",
+            "answers": [
+                "White"
+            ]
+        }
+    ]
+}
+```
+- in recommendationMatrixColumn , each item represents the accepted possible answers for the specific question identified by pageName field, the presence of the possible answer in the "answers" field refers to the value **(1)** that we mentioned earlier,  and the absence is the value **(0)**
