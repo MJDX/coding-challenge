@@ -8,31 +8,31 @@ generator client {
 }
 
 model User {
-  id                    Int                    @id @default(autoincrement())
-  username              String                 @unique
-  email                 String                 @unique
-  password              String
+  id                        Int                        @id @default(autoincrement())
+  username                  String                     @unique
+  email                     String                     @unique
+  password                  String
   questionnaireUserSessions QuestionnaireUserSession[]
 }
 
 model Questionnaire {
-  id                    Int                    @id @default(autoincrement())
-  title                 String
-  questionnaireName     String                 @unique
-  questionPages         QuestionPage[]
+  id                        Int                        @id @default(autoincrement())
+  title                     String
+  questionnaireName         String                     @unique
+  questionPages             QuestionPage[]
   questionnaireUserSessions QuestionnaireUserSession[]
-  resultPage            Json
+  resultPage                Json
 }
 
 model QuestionPage {
-  id                         Int                              @id @default(autoincrement())
-  title                      String
-  pageName                   String                           @unique
-  pageType                   String
-  content                    Json
-  questionnaire              Questionnaire                    @relation(fields: [questionnaireId], references: [id])
-  questionnaireId            Int
-  questionnaireUserSessions QuestionnaireUserSessionAnswer[]
+  id                        Int                              @id @default(autoincrement())
+  title                     String
+  pageName                  String                           @unique
+  pageType                  String
+  content                   Json
+  questionnaire             Questionnaire                    @relation(fields: [questionnaireId], references: [id])
+  questionnaireId           Int
+  questionnaireUserSessionsAnswer QuestionnaireUserSessionAnswer[]
 }
 
 model QuestionnaireUserSession {
