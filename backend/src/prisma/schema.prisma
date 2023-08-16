@@ -32,7 +32,7 @@ model QuestionPage {
   content                   Json
   questionnaire             Questionnaire                    @relation(fields: [questionnaireId], references: [id])
   questionnaireId           Int
-  questionnaireUserSessionsAnswer QuestionnaireUserSessionAnswer[]
+  questionnaireUserSessionsAnswers QuestionnaireUserSessionAnswer[]
 }
 
 model QuestionnaireUserSession {
