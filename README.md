@@ -30,6 +30,10 @@ docker-compose up
 ```
 cd backend
 ```
+- install dependencies :
+```
+npm i
+```
 - generate prisma schema :
 ```
 npx prisma generate --schema=./src/prisma/schema.prisma
@@ -62,6 +66,10 @@ npm run dev
 - navigate to /frontend folder
 ```
 cd frontend
+```
+- install dependencies :
+```
+npm i
 ```
 - start the front end server with :
 ```
