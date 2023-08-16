@@ -1,120 +1,240 @@
-import { PrismaClient, QuestionPage } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import typeDefs from './typedefs';
 
 const prisma = new PrismaClient();
 
+interface Context {
+  user?: { userId: number };
+}
+
+interface RegisterUserArgs {
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface ConnectUserArgs {
+  username: string;
+  password: string;
+}
+
+interface CreateSessionArgs {
+  userId: number;
+  title: string;
+  questionnaireId: number;
+}
+
+interface AddOrUpdateAnswerArgs {
+  id?: number;
+  questionnaireUserSessionId: number;
+  questionPageId: number;
+  value: string;
+}
+
+interface SetSessionSharableArgs {
+  questionnaireUserSessionId: number;
+  sharable: boolean;
+}
+
+interface RefreshTokenArgs {
+  refreshToken: string;
+}
+
 const resolvers = {
   Query: {
-    questionnaire: async (_parent: any, { id }: { id: number }) => {
-      return prisma.questionnaire.findUnique({
-        where: { id },
-        include: {
-          questionPages: {
-            include: {
-              answer: true
-            }
-          }
-        }
-      });
+    questionnaires: async () => {
+      return await prisma.questionnaire.findMany();
     },
-    questionnaireByQuestionnaireName: async (_parent: any, { questionnaireName }: { questionnaireName: string }) => {
-      return prisma.questionnaire.findUnique({
-        where: { questionnaireName },
-        include: {
-          questionPages: {
-            include: {
-              answer: true
-            }
-          }
-        }
-      });
+    questionnaireUserSessions: async (
+      _: any,
+      { questionnaireId, userId }: { questionnaireId: number; userId: number },
+    ) => {
+      const where = {
+        questionnaireId,
+        userId,
+      };
+      return await prisma.questionnaireUserSession.findMany({ where });
     },
-    questionPagesByQuestionnaireId: async (_parent: any, { questionnaireId }: { questionnaireId: number }) => {
-      return prisma.questionPage.findMany({
-        where: { questionnaireId },
-        include: { questionnaire: true, answer: true },
-      });
-    },
-    questionPageById: async (_parent: any, { id }: { id: number }) => {
-      return prisma.questionPage.findUnique({
-        where: { id },
-        include: { questionnaire: true, answer: true },
-      });
-    },
-    questionPageByPageName: async (_parent: any, { pageName }: { pageName: string }) => {
-      return prisma.questionPage.findUnique({
-        where: { pageName },
-        include: { questionnaire: true, answer: true },
-      });
-    },
-    answerByQuestionPageId: async (_parent: any, { questionPageId }: { questionPageId: number }) => {
-      return prisma.answer.findUnique({
-        where: { questionPageId },
-        include: { questionPage: true },
-      });
-    },
-    answerById: async (_parent: any, { id }: { id: number }) => {
-      return prisma.answer.findUnique({
-        where: { id },
-        include: { questionPage: true },
-      });
+    sharableQuestionnaireUserSessions: async (
+      _: any,
+      { questionnaireId }: { questionnaireId: number },
+    ) => {
+      const where = {
+        questionnaireId,
+        sharable: true,
+      };
+      return await prisma.questionnaireUserSession.findMany({ where });
     },
   },
   Mutation: {
-    addQuestionnaire: async (_parent: any, { title, questionnaireName, questionPages, resultPage }: { title: string; questionnaireName: string; questionPages: any[]; resultPage: any }) => {
-      return prisma.questionnaire.create({
+    refreshToken: async (_: any, args: RefreshTokenArgs) => {
+      try {
+
+        const accessSecretKey = process.env.ACCESS_SECRET_KEY;
+        const refreshSecretKey = process.env.REFRESH_SECRET_KEY;
+
+        if (!accessSecretKey) {
+          throw new Error('Missing ACCESS_SECRET_KEY in environment variables');
+        }
+
+        if (!refreshSecretKey) {
+          throw new Error('Missing REFRESH_SECRET_KEY in environment variables');
+        }
+
+        const decoded = jwt.verify(args.refreshToken, refreshSecretKey) as JwtPayload;
+        const userId = decoded.userId;
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        const accessToken = jwt.sign({ userId: user.id, userEmail: user.email }, accessSecretKey, {
+          expiresIn: '15m'
+        });
+
+        return { accessToken };
+      } catch (error) {
+        throw new Error('Invalid refresh token');
+      }
+    },
+    registerUser: async (_: any, args: RegisterUserArgs) => {
+
+      const accessSecretKey = process.env.ACCESS_SECRET_KEY;
+      const refreshSecretKey = process.env.REFRESH_SECRET_KEY;
+
+      if (!accessSecretKey) {
+        throw new Error('Missing ACCESS_SECRET_KEY in environment variables');
+      }
+
+      if (!refreshSecretKey) {
+        throw new Error('Missing REFRESH_SECRET_KEY in environment variables');
+      }
+
+      const hashedPassword = await bcrypt.hash(args.password, 10);
+      const user = await prisma.user.create({
         data: {
-          title: title,
-          questionnaireName: questionnaireName,
-          questionPages: {
-            create: questionPages,
-          },
-          resultPage: resultPage,
+          username: args.username,
+          email: args.email,
+          password: hashedPassword,
         },
-        include: { questionPages: true },
-      });
-    },
-    addAnswer: async (_parent: any, { addAnswerInput }: { addAnswerInput: any }) => {
-      const { value, questionPageId } = addAnswerInput;
-      return prisma.answer.create({
-        data: {
-          value,
-          questionPage: {
-            connect: { id: questionPageId },
-          },
-        },
-        include: { questionPage: true },
-      });
-    },
-    editAnswer: async (_parent: any, { id, editAnswerInput }: { id: number; editAnswerInput: any }) => {
-      const { value, questionPageId } = editAnswerInput;
-      return prisma.answer.update({
-        where: { id },
-        data: {
-          value,
-          questionPage: {
-            connect: { id: questionPageId },
-          },
-        },
-        include: { questionPage: true },
-      });
-    },
-    deleteAnswer: async (_parent: any, { id }: { id: number }) => {
-      return prisma.answer.delete({
-        where: { id },
-      });
-    },
-    deleteAnswersByQuestionnaireId: async (_parent: any, { questionnaireId  }: { questionnaireId : number }) => {
-      const questionPages = await prisma.questionPage.findMany({
-        where: { questionnaireId },
       });
 
-      const questionPageIds = questionPages.map((page) => page.id);
-
-      const deleteResult = await prisma.answer.deleteMany({
-        where: { questionPageId: { in: questionPageIds } },
+      // Generate access token
+      const accessToken = jwt.sign({ userId: user.id, userEmail: user.email }, accessSecretKey, {
+        expiresIn: '15m'
       });
 
-      return deleteResult.count;
+      // Generate refresh token
+      const refreshToken = jwt.sign({ userId: user.id, userEmail: user.email }, refreshSecretKey, {
+        expiresIn: '7d'
+      });
+
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        accessToken: accessToken,
+        refreshToken: refreshToken
+      };
+    },
+    connectUser: async (_: any, args: ConnectUserArgs) => {
+
+      const accessSecretKey = process.env.ACCESS_SECRET_KEY;
+      const refreshSecretKey = process.env.REFRESH_SECRET_KEY;
+
+      if (!accessSecretKey) {
+        throw new Error('Missing ACCESS_SECRET_KEY in environment variables');
+      }
+
+      if (!refreshSecretKey) {
+        throw new Error('Missing REFRESH_SECRET_KEY in environment variables');
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { username: args.username },
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const passwordMatches = await bcrypt.compare(args.password, user.password);
+      if (!passwordMatches) {
+        throw new Error('Invalid password');
+      }
+
+      // Generate access token
+      const accessToken = jwt.sign({ userId: user.id, userEmail: user.email }, accessSecretKey, {
+        expiresIn: '15m'
+      });
+
+      // Generate refresh token
+      const refreshToken = jwt.sign({ userId: user.id, userEmail: user.email }, refreshSecretKey, {
+        expiresIn: '7d'
+      });
+
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        accessToken: accessToken,
+        refreshToken: refreshToken
+      };
+    },
+    createQuestionnaireUserSession: async (_: any, args: CreateSessionArgs, { user }: Context) => {
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const session = await prisma.questionnaireUserSession.create({
+        data: {
+          title: args.title,
+          userId: args.userId,
+          sharable: false,
+          questionnaireId: args.questionnaireId
+        },
+      });
+
+      return session;
+    },
+    addOrUpdateAnswer: async (_: any, args: AddOrUpdateAnswerArgs, { user }: Context) => {
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const where = {
+        id: args.id,
+      };
+
+      const upsertData = {
+        questionnaireUserSessionId: args.questionnaireUserSessionId,
+        questionPageId: args.questionPageId,
+        value: args.value,
+      };
+
+      const sessionAnswer = await prisma.questionnaireUserSessionAnswer.upsert({
+        where,
+        update: { value: args.value },
+        create: upsertData,
+      });
+
+      return sessionAnswer;
+    },
+
+    setSessionSharable: async (_: any, args: SetSessionSharableArgs, { user }: Context) => {
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const updatedSession = await prisma.questionnaireUserSession.update({
+        where: { id: args.questionnaireUserSessionId },
+        data: { sharable: args.sharable },
+      });
+
+      return updatedSession;
     },
   },
 };

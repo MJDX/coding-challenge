@@ -1,34 +1,58 @@
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://foxbase:foxbaseRoot@localhost:5432/foxbase"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
+model User {
+  id                    Int                    @id @default(autoincrement())
+  username              String                 @unique
+  email                 String                 @unique
+  password              String
+  questionnaireSessions QuestionnaireUserSession[]
+}
+
 model Questionnaire {
-  id Int @id @default(autoincrement())
-  title String
-  questionnaireName String  @unique
-  questionPages QuestionPage[]
-  resultPage Json
+  id                    Int                    @id @default(autoincrement())
+  title                 String
+  questionnaireName     String                 @unique
+  questionPages         QuestionPage[]
+  questionnaireSessions QuestionnaireUserSession[]
+  resultPage            Json
 }
+
 model QuestionPage {
-  id Int @id @default(autoincrement())
-  title String
-  pageName String  @unique
-  pageType String
-  content Json
-  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
-  questionnaireId Int
-  answer Answer?
+  id                         Int                              @id @default(autoincrement())
+  title                      String
+  pageName                   String                           @unique
+  pageType                   String
+  content                    Json
+  questionnaire              Questionnaire                    @relation(fields: [questionnaireId], references: [id])
+  questionnaireId            Int
+  questionnaireSessionAnswer QuestionnaireUserSessionAnswer[]
 }
 
-model Answer {
-  id Int @id @default(autoincrement())
-  value String
-  questionPage QuestionPage @relation(fields: [questionPageId], references: [id])
-  questionPageId Int @unique
+model QuestionnaireUserSession {
+  id                              Int                              @id @default(autoincrement())
+  title                           String
+  userId                          Int
+  sharable                        Boolean
+  user                            User                             @relation(fields: [userId], references: [id])
+  questionnaire                   Questionnaire                    @relation(fields: [questionnaireId], references: [id])
+  questionnaireId                 Int
+  questionnaireUserSessionAnswers QuestionnaireUserSessionAnswer[]
+
+  @@unique([title, userId])
 }
 
+model QuestionnaireUserSessionAnswer {
+  id                         Int                      @id @default(autoincrement())
+  questionnaireUserSessionId Int
+  questionnaireUserSession   QuestionnaireUserSession @relation(fields: [questionnaireUserSessionId], references: [id])
+  questionPage               QuestionPage             @relation(fields: [questionPageId], references: [id])
+  questionPageId             Int
+  value                      String
+}

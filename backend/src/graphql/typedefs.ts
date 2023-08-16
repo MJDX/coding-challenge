@@ -1,62 +1,65 @@
 const typeDefs = `#graphql
   scalar JSON
   
+  type User {
+    id: Int
+    username: String
+    email: String
+    questionnaireSessions: [QuestionnaireUserSession]
+  }
+
   type Questionnaire {
-    id: Int!
+    id: Int
     title: String
-    questionnaireName: String!
-    questionPages: [QuestionPage!]!
+    questionnaireName: String
+    questionPages: [QuestionPage]
+    questionnaireSessions: [QuestionnaireUserSession]
     resultPage: JSON
   }
 
   type QuestionPage {
-    id: Int!
+    id: Int
     title: String
-    pageName: String!
-    pageType: String!
+    pageName: String
+    pageType: String
     content: JSON
-    questionnaire: Questionnaire!
-    answer: Answer
-  } 
+  }
 
-  type Answer {
-    id: Int!
-    value: String!
-    questionPage: QuestionPage!
+  type QuestionnaireUserSession {
+    id: Int
+    title: String
+    userId: Int
+    sharable: Boolean
+    user: User
+    questionnaire: Questionnaire
+    questionnaireUserSessionAnswers: [QuestionnaireUserSessionAnswer]
+  }
+
+  type QuestionnaireUserSessionAnswer {
+    id: Int
+    questionnaireUserSessionId: Int
+    questionnaireUserSession: QuestionnaireUserSession
+    questionPage: QuestionPage
+    value: String
   }
 
   type Query {
-    questionnaire(id: Int!): Questionnaire!
-    questionnaireByQuestionnaireName(questionnaireName: String!): Questionnaire!
-    questionPagesByQuestionnaireId(questionnaireId: Int!): [QuestionPage!]!
-    questionPageById(id: Int!): QuestionPage!
-    questionPageByPageName(pageName: String!): QuestionPage!
-    answerByQuestionPageId(questionPageId: Int!): Answer
-    answerById(id: Int!): Answer
+    questionnaires: [Questionnaire]
+    questionnaireUserSessions(questionnaireId: Int, userId: Int): [QuestionnaireUserSession]
+    sharableQuestionnaireUserSessions(questionnaireId: Int): [QuestionnaireUserSession]
   }
 
   type Mutation {
-    addQuestionnaire(questionnaireName: String!, questionPages: [QuestionPageInput!]!, resultPage : JSON): Questionnaire!
-    addAnswer(addAnswerInput: AddAnswerInput!): Answer!
-    editAnswer(id: Int!, editAnswerInput: EditAnswerInput): Answer!
-    deleteAnswer(id: Int!): Answer!
-    deleteAnswersByQuestionnaireId(questionnaireId: Int!): Int
+    refreshToken(refreshToken: String!): RefreshTokenResponse
+    registerUser(username: String, email: String, password: String): User
+    connectUser(username: String, password: String): User
+    createQuestionnaireUserSession(userId: Int, title: String): QuestionnaireUserSession
+    addOrUpdateAnswer(sessionId: Int, questionPageId: Int, value: String): QuestionnaireUserSessionAnswer
+    setSessionSharable(sessionId: Int, sharable: Boolean): QuestionnaireUserSession
   }
   
-  input QuestionPageInput {
-    title: String!
-    pageName: String!
-    content: JSON
-  }
-  
-  input AddAnswerInput {
-    value: String!
-    questionPageId: Int!
-  }
-  
-  input EditAnswerInput {
-    value: String!
-    questionPageId: Int!
+  type RefreshTokenResponse {
+    accessToken: String
   }
 `;
 

@@ -9,26 +9,34 @@
     "fix": "eslint --fix -c .eslintrc.yml --ext .ts ."
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/node": "^20.4.1",
-    "prisma": "^4.16.2",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.1.6",
-    "prettier": "^2.5.1",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "eslint": "7.32.0",
     "eslint-config-google": "0.14.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0"
+    "prettier": "^2.5.1",
+    "prisma": "^4.16.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   },
   "dependencies": {
     "@apollo/server": "^4.7.5",
     "@prisma/client": "4.16.2",
+    "@protobufjs/pool": "^1.1.0",
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "graphql": "^16.7.1"
+    "express-jwt": "^8.4.1",
+    "express-rate-limit": "^6.9.0",
+    "graphql": "^16.7.1",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.1"
   },
   "prettier": {
     "semi": true,
