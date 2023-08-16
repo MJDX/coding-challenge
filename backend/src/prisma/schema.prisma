@@ -20,7 +20,7 @@ model Questionnaire {
   title                 String
   questionnaireName     String                 @unique
   questionPages         QuestionPage[]
-  questionnaireSessions QuestionnaireUserSession[]
+  questionnaireUserSessions QuestionnaireUserSession[]
   resultPage            Json
 }
 
