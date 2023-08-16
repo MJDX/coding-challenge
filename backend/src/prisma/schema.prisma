@@ -1,16 +1,34 @@
-// Placeholder Prisma schema file
-// Define your Prisma database schema here
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://foxbase:foxbaseRoot@localhost:5432/foxbase"
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-model Page {
+model Questionnaire {
   id Int @id @default(autoincrement())
-    // Have the defintion of a page here
+  title String
+  questionnaireName String  @unique
+  questionPages QuestionPage[]
+  resultPage Json
+}
+model QuestionPage {
+  id Int @id @default(autoincrement())
+  title String
+  pageName String  @unique
+  pageType String
+  content Json
+  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id])
+  questionnaireId Int
+  answer Answer?
+}
+
+model Answer {
+  id Int @id @default(autoincrement())
+  value String
+  questionPage QuestionPage @relation(fields: [questionPageId], references: [id])
+  questionPageId Int @unique
 }
 

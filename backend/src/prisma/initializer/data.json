@@ -1,0 +1,609 @@
+[
+    {
+        "title": "Color Recommendation Questionnaire",
+        "questionnaireName": "colorRecommendationQuestionnaire",
+        "questionPages": [
+            {
+                "title": "Application Scope",
+                "pageName": "applicationScopePage",
+                "pageType": "QuestionPage",
+                "content": {
+                    "showPageNavigationCondition": null,
+                    "question": {
+                        "label": "What's the scope of application?",
+                        "image": ""
+                    },
+                    "answerOptions": {
+                        "type": "cards",
+                        "options": [
+                            {
+                                "label": "Outdoor",
+                                "value": "Outdoor",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Indoor",
+                                "value": "Indoor",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "title": "Surface Type",
+                "pageName": "surfaceType",
+                "pageType": "QuestionPage",
+                "content": {
+                    "showPageNavigationCondition": null,
+                    "question": {
+                        "label": "What's the Surface type?",
+                        "image": ""
+                    },
+                    "answerOptions": {
+                        "type": "cards",
+                        "options": [
+                            {
+                                "label": "Wood",
+                                "value": "Wood",
+                                "image": "",
+                                "showOptionNavigationCondition": {
+                                    "byPageInNavigationTree": {
+                                        "pageName": "applicationScopePage",
+                                        "byQuestionAnswer": {
+                                            "value": "Outdoor"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "label": "Mat",
+                                "value": "Mat",
+                                "image": "",
+                                "showOptionNavigationCondition": {
+                                    "byPageInNavigationTree": {
+                                        "pageName": "applicationScopePage",
+                                        "byQuestionAnswer": {
+                                            "value": "Indoor"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "label": "Facade",
+                                "value": "Facade",
+                                "image": "",
+                                "showOptionNavigationCondition": {
+                                    "byPageInNavigationTree": {
+                                        "pageName": "applicationScopePage",
+                                        "byQuestionAnswer": {
+                                            "value": "Outdoor"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "label": "Plaster",
+                                "value": "Plaster",
+                                "image": "",
+                                "showOptionNavigationCondition": {
+                                    "byPageInNavigationTree": {
+                                        "pageName": "applicationScopePage",
+                                        "byQuestionAnswer": {
+                                            "value": "Indoor"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "title": "Opacity",
+                "pageName": "opacity",
+                "pageType": "QuestionPage",
+                "content": {
+                    "showPageNavigationCondition": null,
+                    "question": {
+                        "label": "Do you know Opacity?",
+                        "image": ""
+                    },
+                    "answerOptions": {
+                        "type": "buttons",
+                        "options": [
+                            {
+                                "label": "Yes",
+                                "value": "Yes",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "No",
+                                "value": "No",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "title": "Opacity 2",
+                "pageName": "opacity2",
+                "pageType": "QuestionPage",
+                "content": {
+                    "showPageNavigationCondition": {
+                        "byPageInNavigationTree": {
+                            "pageName": "opacity",
+                            "byQuestionAnswer": {
+                                "value": "Yes"
+                            }
+                        },
+                        "onConditionUnsatisfied": {
+                            "actionType": "skip",
+                            "actionValue": ""
+                        }
+                    },
+                    "question": {
+                        "label": "How strong should the opacity of the color be?",
+                        "image": ""
+                    },
+                    "answerOptions": {
+                        "type": "slider",
+                        "options": [
+                            {
+                                "label": "Class 1 : <95%",
+                                "value": "<95%",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Class 2 : 95%",
+                                "value": "95%",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Class 3 : 98%",
+                                "value": "98%",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Class 4 : >99.5%",
+                                "value": ">99.5%",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "title": "Undercoat",
+                "pageName": "undercoat",
+                "pageType": "QuestionPage",
+                "content": {
+                    "showPageNavigationCondition": {
+                        "byPageInNavigationTree": {
+                            "pageName": "opacity",
+                            "byQuestionAnswer": {
+                                "value": "No"
+                            }
+                        },
+                        "onConditionUnsatisfied": {
+                            "actionType": "skip",
+                            "actionValue": ""
+                        }
+                    },
+                    "question": {
+                        "label": "What's the undercoat like?",
+                        "image": ""
+                    },
+                    "answerOptions": {
+                        "type": "cards",
+                        "options": [
+                            {
+                                "label": "Brighter",
+                                "value": "Brighter",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Darker",
+                                "value": "Darker",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "title": "Hue",
+                "pageName": "hue",
+                "pageType": "QuestionPage",
+                "content": {
+                    "showPageNavigationCondition": null,
+                    "question": {
+                        "label": "Which Hue?",
+                        "image": ""
+                    },
+                    "answerOptions": {
+                        "type": "cards",
+                        "options": [
+                            {
+                                "label": "Red",
+                                "value": "Red",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Blue",
+                                "value": "Blue",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Green",
+                                "value": "Green",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Yellow",
+                                "value": "Yellow",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "Black",
+                                "value": "Black",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            },
+                            {
+                                "label": "White",
+                                "value": "White",
+                                "image": "",
+                                "showOptionNavigationCondition": null
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "resultPage": {
+            "title": "Recommendation",
+            "pageName": "recommendation",
+            "pageType": "ResultPage",
+            "content": {
+                "showPageNavigationCondition": null,
+                "header": {
+                    "label": "Recommended Products : ",
+                    "image": ""
+                },
+                "recommendationOptions": {
+                    "type": "cards",
+                    "options": [
+                        {
+                            "label": "Paint bucket 15L white",
+                            "value": "PaintBucket15LWhite",
+                            "image": "",
+                            "recommendationMatrixColumn": [
+                                {
+                                    "pageName": "applicationScopePage",
+                                    "answers": [
+                                        "Outdoor",
+                                        "Indoor"
+                                    ]
+                                },
+                                {
+                                    "pageName": "surfaceType",
+                                    "answers": [
+                                        "Wood",
+                                        "Mat",
+                                        "Facade",
+                                        "Plaster"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity",
+                                    "answers": [
+                                        "Yes",
+                                        "No"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity2",
+                                    "answers": [
+                                        "<95%",
+                                        "95%",
+                                        "98%",
+                                        ">99.5%"
+                                    ]
+                                },
+                                {
+                                    "pageName": "undercoat",
+                                    "answers": [
+                                        "Brighter",
+                                        "Darker"
+                                    ]
+                                },
+                                {
+                                    "pageName": "hue",
+                                    "answers": [
+                                        "White"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Paint bucket 15L Black",
+                            "value": "PaintBucket15LBlack",
+                            "image": "",
+                            "recommendationMatrixColumn": [
+                                {
+                                    "pageName": "applicationScopePage",
+                                    "answers": [
+                                        "Outdoor",
+                                        "Indoor"
+                                    ]
+                                },
+                                {
+                                    "pageName": "surfaceType",
+                                    "answers": [
+                                        "Wood",
+                                        "Mat",
+                                        "Facade",
+                                        "Plaster"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity",
+                                    "answers": [
+                                        "Yes",
+                                        "No"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity2",
+                                    "answers": [
+                                        "<95%",
+                                        "95%",
+                                        "98%",
+                                        ">99.5%"
+                                    ]
+                                },
+                                {
+                                    "pageName": "undercoat",
+                                    "answers": [
+                                        "Brighter",
+                                        "Darker"
+                                    ]
+                                },
+                                {
+                                    "pageName": "hue",
+                                    "answers": [
+                                        "Black"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Paint bucket 15L Blue",
+                            "value": "PaintBucket15LBlue",
+                            "image": "",
+                            "recommendationMatrixColumn": [
+                                {
+                                    "pageName": "applicationScopePage",
+                                    "answers": [
+                                        "Outdoor",
+                                        "Indoor"
+                                    ]
+                                },
+                                {
+                                    "pageName": "surfaceType",
+                                    "answers": [
+                                        "Wood",
+                                        "Mat",
+                                        "Facade",
+                                        "Plaster"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity",
+                                    "answers": [
+                                        "Yes",
+                                        "No"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity2",
+                                    "answers": [
+                                        "<95%",
+                                        "95%",
+                                        "98%",
+                                        ">99.5%"
+                                    ]
+                                },
+                                {
+                                    "pageName": "undercoat",
+                                    "answers": [
+                                        "Brighter",
+                                        "Darker"
+                                    ]
+                                },
+                                {
+                                    "pageName": "hue",
+                                    "answers": [
+                                        "Blue"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Paint bucket 15L Red",
+                            "value": "PaintBucket15LRed",
+                            "image": "",
+                            "recommendationMatrixColumn": [
+                                {
+                                    "pageName": "applicationScopePage",
+                                    "answers": [
+                                        "Outdoor",
+                                        "Indoor"
+                                    ]
+                                },
+                                {
+                                    "pageName": "surfaceType",
+                                    "answers": [
+                                        "Wood",
+                                        "Mat",
+                                        "Facade",
+                                        "Plaster"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity",
+                                    "answers": [
+                                        "Yes",
+                                        "No"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity2",
+                                    "answers": [
+                                        "<95%",
+                                        "95%",
+                                        "98%",
+                                        ">99.5%"
+                                    ]
+                                },
+                                {
+                                    "pageName": "undercoat",
+                                    "answers": [
+                                        "Brighter",
+                                        "Darker"
+                                    ]
+                                },
+                                {
+                                    "pageName": "hue",
+                                    "answers": [
+                                        "Red"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Paint bucket 15L Green",
+                            "value": "PaintBucket15LGreen",
+                            "image": "",
+                            "recommendationMatrixColumn": [
+                                {
+                                    "pageName": "applicationScopePage",
+                                    "answers": [
+                                        "Outdoor",
+                                        "Indoor"
+                                    ]
+                                },
+                                {
+                                    "pageName": "surfaceType",
+                                    "answers": [
+                                        "Wood",
+                                        "Mat",
+                                        "Facade",
+                                        "Plaster"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity",
+                                    "answers": [
+                                        "Yes",
+                                        "No"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity2",
+                                    "answers": [
+                                        "<95%",
+                                        "95%",
+                                        "98%",
+                                        ">99.5%"
+                                    ]
+                                },
+                                {
+                                    "pageName": "undercoat",
+                                    "answers": [
+                                        "Brighter",
+                                        "Darker"
+                                    ]
+                                },
+                                {
+                                    "pageName": "hue",
+                                    "answers": [
+                                        "Green"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Paint bucket 15L Yellow",
+                            "value": "PaintBucket15LYellow",
+                            "image": "",
+                            "recommendationMatrixColumn": [
+                                {
+                                    "pageName": "applicationScopePage",
+                                    "answers": [
+                                        "Outdoor",
+                                        "Indoor"
+                                    ]
+                                },
+                                {
+                                    "pageName": "surfaceType",
+                                    "answers": [
+                                        "Wood",
+                                        "Mat",
+                                        "Facade",
+                                        "Plaster"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity",
+                                    "answers": [
+                                        "Yes",
+                                        "No"
+                                    ]
+                                },
+                                {
+                                    "pageName": "opacity2",
+                                    "answers": [
+                                        "<95%",
+                                        "95%",
+                                        "98%",
+                                        ">99.5%"
+                                    ]
+                                },
+                                {
+                                    "pageName": "undercoat",
+                                    "answers": [
+                                        "Brighter",
+                                        "Darker"
+                                    ]
+                                },
+                                {
+                                    "pageName": "hue",
+                                    "answers": [
+                                        "Yellow"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    }
+]
