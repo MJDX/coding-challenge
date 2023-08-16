@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white flex-grow h-full overflow-y-auto">
+    <div class="flex-grow overflow-y-auto">
         <slot name="content"></slot>
     </div>
 </template>

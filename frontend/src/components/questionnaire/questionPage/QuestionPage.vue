@@ -1,41 +1,39 @@
 <template>
-    <div class="bg-white flex-grow overflow-y-auto">
-        <div class="max-w-3xl mx-auto p-4">
-            <h1 class="text-3xl">
-                {{ page.title }}
-            </h1>
-            <h3 class="text-lg mt-4">
-                {{ page.content.question.label }}
-            </h3>
+    <div class="max-w-3xl mx-auto p-4">
+        <h1 class="text-3xl">
+            {{ page.title }}
+        </h1>
+        <h3 class="text-lg mt-4">
+            {{ page.content.question.label }}
+        </h3>
 
-            <template v-if="page.content.answerOptions.type === 'cards'">
-                <div class="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mt-4 gap-4">
-                    <template v-for="item in page.content.answerOptions.options" :key="item.value">
-                        <CardAnswer v-if="shouldShowOption(item)" :data="item" :isSelected="temporaryAnswer === item"
-                            @answer-clicked="toggleAnswerClicked" />
-                    </template>
-                </div>
-            </template>
-            <template v-else-if="page.content.answerOptions.type === 'buttons'">
-                <div class="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mt-4 gap-4">
-                    <template v-for="item in page.content.answerOptions.options" :key="item.value">
-                        <ButtonAnswer v-if="shouldShowOption(item)" :data="item" :isSelected="temporaryAnswer === item"
-                            @answer-clicked="toggleAnswerClicked" />
-                    </template>
-                </div>
-            </template>
-            <template v-else-if="page.content.answerOptions.type === 'slider'">
-                <div class=" mt-4 w-full">
-                    <SliderAnswer :listOfOptions="page.content.answerOptions.options" :selected-option="temporaryAnswer"
+        <template v-if="page.content.answerOptions.type === 'cards'">
+            <div class="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mt-4 gap-4">
+                <template v-for="item in page.content.answerOptions.options" :key="item.value">
+                    <CardAnswer v-if="shouldShowOption(item)" :data="item" :isSelected="temporaryAnswer === item"
                         @answer-clicked="toggleAnswerClicked" />
-                </div>
-            </template>
-            <div class="flex justify-end">
-                <Button class="mr-8" :buttonName="'PreviousQuestion'" :buttonLabel="'Previous'"
-                    @button-click-event="handleButtonClickEvent" />
-                <Button class="mr-4" :buttonName="'NextQuestion'" :buttonLabel="'Next'"
-                    @button-click-event="handleButtonClickEvent" />
+                </template>
             </div>
+        </template>
+        <template v-else-if="page.content.answerOptions.type === 'buttons'">
+            <div class="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mt-4 gap-4">
+                <template v-for="item in page.content.answerOptions.options" :key="item.value">
+                    <ButtonAnswer v-if="shouldShowOption(item)" :data="item" :isSelected="temporaryAnswer === item"
+                        @answer-clicked="toggleAnswerClicked" />
+                </template>
+            </div>
+        </template>
+        <template v-else-if="page.content.answerOptions.type === 'slider'">
+            <div class=" mt-4 w-full">
+                <SliderAnswer :listOfOptions="page.content.answerOptions.options" :selected-option="temporaryAnswer"
+                    @answer-clicked="toggleAnswerClicked" />
+            </div>
+        </template>
+        <div class="flex justify-end">
+            <Button class="mr-8" :buttonName="'PreviousQuestion'" :buttonLabel="'Previous'"
+                @button-click-event="handleButtonClickEvent" />
+            <Button class="mr-4" :buttonName="'NextQuestion'" :buttonLabel="'Next'"
+                @button-click-event="handleButtonClickEvent" />
         </div>
     </div>
 </template>

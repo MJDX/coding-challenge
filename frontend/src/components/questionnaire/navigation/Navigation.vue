@@ -1,5 +1,5 @@
 <template>
-    <aside class="bg-gray-200 md:w-1/4 overflow-y-auto">
+    <aside class="bg-gray-200 w-96 h-full overflow-y-auto">
         <h3 class="text-lg mt-4">
             Navigation
         </h3>

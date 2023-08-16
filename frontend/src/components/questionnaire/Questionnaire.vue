@@ -1,20 +1,22 @@
 <template>
-    <div class="w-full">
-        <Progress :progress="progress" />
-    </div>
-    <div class="flex flex-row flex-grow">
+    <div class="flex flex-row h-full">
         <LoadingSpinner v-if="loading" />
         <Navigation v-if="!loading" :nav-tree="navigationTree" :current-nav-item="currentNavigationItem"
             @on-nav-item-click="onNavItemClick" />
-        <template v-if="!loading">
-            <QuestionPage v-if="isQuestionPage(currentPage)" :page="currentPage" :navTree="navigationTree"
-                @onQuestionPagePreviousClicked="handleOnQuestionPagePreviousClicked"
-                @onQuestionPageNextClicked="handleOnQuestionPageNextClicked" />
-            <ResultPage v-else-if="isResultPage(currentPage)" :resultPage="currentPage"
-                :answeredPages="questionnaire.questionPages"
-                @on-resultresult-page-previous-clicked="handleOnResultPagePreviousClicked"
-                @on-resultresult-page-reset-questionnaire-clicked="handleOnResultPageResetQuestionnaireClicked" />
-        </template>
+        <div class="bg-white flex-grow overflow-y-auto">
+            <div class="w-full">
+                <Progress :progress="progress" />
+            </div>
+            <template v-if="!loading">
+                <QuestionPage v-if="isQuestionPage(currentPage)" :page="currentPage" :navTree="navigationTree"
+                    @onQuestionPagePreviousClicked="handleOnQuestionPagePreviousClicked"
+                    @onQuestionPageNextClicked="handleOnQuestionPageNextClicked" />
+                <ResultPage v-else-if="isResultPage(currentPage)" :resultPage="currentPage"
+                    :answeredPages="questionnaire.questionPages"
+                    @on-resultresult-page-previous-clicked="handleOnResultPagePreviousClicked"
+                    @on-resultresult-page-reset-questionnaire-clicked="handleOnResultPageResetQuestionnaireClicked" />
+            </template>
+        </div>
     </div>
 </template>
 
@@ -267,7 +269,7 @@ function setCurrentPageBySpecificIndex(index: number) {
     }
     currentPageIndex.value = index;
     if (questionnaire.questionPages && questionnaire.questionPages.length > 0) {
-        if(currentPageIndex.value > questionnaire.questionPages.length){
+        if (currentPageIndex.value > questionnaire.questionPages.length) {
             currentPageIndex.value = questionnaire.questionPages.length
         }
         progress.value = (currentPageIndex.value / questionnaire.questionPages.length) * 100

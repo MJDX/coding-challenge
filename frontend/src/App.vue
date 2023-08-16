@@ -1,8 +1,8 @@
 
 <template>
-  <div class="h-screen w-screen overflow-hidden">
+  <div class="h-screen w-screen overflow-hidden flex flex-col">
     <Header />
-    <div class="flex-1 flex flex-row h-full">
+    <div class="flex-grow flex flex-row w-full">
       <MainContainer>
         <template #content>
           <Questionnaire :questionnaire-name="'colorRecommendationQuestionnaire'"/>
