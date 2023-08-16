@@ -47,7 +47,7 @@ const resolvers = {
     questionnaires: async () => {
       return await prisma.questionnaire.findMany();
     },
-    questionnaireUserSessions: async (
+    questionnaireUserSessionsByUser: async (
       _: any,
       { questionnaireId, userId }: { questionnaireId: number; userId: number },
     ) => {
@@ -66,6 +66,31 @@ const resolvers = {
         sharable: true,
       };
       return await prisma.questionnaireUserSession.findMany({ where });
+    },
+    sharableQuestionnaireUserSessionsWithoutUserOwnedOnes: async (
+      _: any,
+      { questionnaireId, userId }: { questionnaireId: number, userId: number },
+    ) => {
+      const sharableSessions = await prisma.questionnaireUserSession.findMany({
+        where: {
+          questionnaireId,
+          userId: { not: userId },
+          sharable: true,
+        },
+      });
+      return sharableSessions;
+    },
+    getFullQuestionnaireUserSession: async (
+      _: any,
+      { questionnaireUserSessionId }: { questionnaireUserSessionId: number },
+    ) => {
+      return await prisma.questionnaireUserSession.findUnique({
+        where: { id: questionnaireUserSessionId },
+        include: {
+          questionnaire: true,
+          questionnaireUserSessionAnswers: true,
+        },
+      });
     },
   },
   Mutation: {
@@ -235,6 +260,27 @@ const resolvers = {
       });
 
       return updatedSession;
+    },
+    removeQuestionnaireUserSessionAnswer: async (_ : any, { id } : { id : number} ) => {
+      try {
+        const removedAnswer = await prisma.questionnaireUserSessionAnswer.delete({
+          where: { id },
+        });
+        return removedAnswer;
+      } catch (error) {
+        throw new Error(`Error removing answer with ID ${id}: ${error}`);
+      }
+    },
+
+    removeQuestionnaireUserSessionAnswersBySessionId: async (_ : any, { sessionId } : { sessionId : number}) => {
+      try {
+        const removedAnswers = await prisma.questionnaireUserSessionAnswer.deleteMany({
+          where: { questionnaireUserSessionId: sessionId },
+        });
+        return removedAnswers;
+      } catch (error) {
+        throw new Error(`Error removing answers for session ID ${sessionId}: ${error}`);
+      }
     },
   },
 };

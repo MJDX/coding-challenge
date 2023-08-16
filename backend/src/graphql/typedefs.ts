@@ -5,7 +5,7 @@ const typeDefs = `#graphql
     id: Int
     username: String
     email: String
-    questionnaireSessions: [QuestionnaireUserSession]
+    questionnaireUserSessions: [QuestionnaireUserSession]
   }
 
   type Questionnaire {
@@ -13,7 +13,7 @@ const typeDefs = `#graphql
     title: String
     questionnaireName: String
     questionPages: [QuestionPage]
-    questionnaireSessions: [QuestionnaireUserSession]
+    questionnaireUserSessions: [QuestionnaireUserSession]
     resultPage: JSON
   }
 
@@ -45,8 +45,10 @@ const typeDefs = `#graphql
 
   type Query {
     questionnaires: [Questionnaire]
-    questionnaireUserSessions(questionnaireId: Int, userId: Int): [QuestionnaireUserSession]
+    questionnaireUserSessionsByUser(questionnaireId: Int, userId: Int): [QuestionnaireUserSession]
     sharableQuestionnaireUserSessions(questionnaireId: Int): [QuestionnaireUserSession]
+    sharableQuestionnaireUserSessionsWithoutUserOwnedOnes(questionnaireId: Int, userId: Int): [QuestionnaireUserSession]
+    getFullQuestionnaireUserSession(questionnaireUserSessionId: Int): QuestionnaireUserSession
   }
 
   type Mutation {
@@ -56,6 +58,8 @@ const typeDefs = `#graphql
     createQuestionnaireUserSession(userId: Int, title: String): QuestionnaireUserSession
     addOrUpdateAnswer(sessionId: Int, questionPageId: Int, value: String): QuestionnaireUserSessionAnswer
     setSessionSharable(sessionId: Int, sharable: Boolean): QuestionnaireUserSession
+    removeQuestionnaireUserSessionAnswer(id: Int!): QuestionnaireUserSessionAnswer
+    removeQuestionnaireUserSessionAnswersBySessionId(sessionId: Int!): [QuestionnaireUserSessionAnswer]
   }
   
   type RefreshTokenResponse {

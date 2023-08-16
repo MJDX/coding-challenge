@@ -18,6 +18,7 @@ model User {
 model Questionnaire {
   id                        Int                        @id @default(autoincrement())
   title                     String
+  image                     String
   questionnaireName         String                     @unique
   questionPages             QuestionPage[]
   questionnaireUserSessions QuestionnaireUserSession[]
