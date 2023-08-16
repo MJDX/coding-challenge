@@ -4,7 +4,7 @@
             <div class="flex items-center mx-auto">
                 <a href="#" class="flex items-center text-white">
                     <!-- <img src="logo.png" alt="Logo" class="h-8 w-8 mr-2"> -->
-                    <span class="font-bold text-lg">Questionnaire</span>
+                    <span class="font-bold text-3xl">Questionnaire</span>
                 </a>
             </div>
         </div>

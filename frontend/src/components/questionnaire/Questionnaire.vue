@@ -1,4 +1,7 @@
 <template>
+    <div class="w-full">
+        <Progress :progress="progress" />
+    </div>
     <div class="flex flex-row flex-grow">
         <LoadingSpinner v-if="loading" />
         <Navigation v-if="!loading" :nav-tree="navigationTree" :current-nav-item="currentNavigationItem"
@@ -17,6 +20,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue';
+import Progress from './progress/Progress.vue';
 import QuestionPage from './questionPage/QuestionPage.vue'
 import ResultPage from './resultPage/ResultPage.vue'
 import Navigation from './navigation/Navigation.vue';
@@ -38,6 +42,7 @@ const navigationTree = ref<NavigationTreeItemType[]>([]);
 const currentNavigationItem = ref<NavigationTreeItemType>();
 const currentPage: QuestionPageType | ResultPageType = reactive(Factory.createDefaultQuestionPage());
 const currentPageIndex = ref<number>(0);
+const progress = ref<number>(0);
 
 fetchQuestionnaire(props.questionnaireName)
 
@@ -261,6 +266,12 @@ function setCurrentPageBySpecificIndex(index: number) {
         index = 0;
     }
     currentPageIndex.value = index;
+    if (questionnaire.questionPages && questionnaire.questionPages.length > 0) {
+        if(currentPageIndex.value > questionnaire.questionPages.length){
+            currentPageIndex.value = questionnaire.questionPages.length
+        }
+        progress.value = (currentPageIndex.value / questionnaire.questionPages.length) * 100
+    }
     setCurrentPage();
 }
 
