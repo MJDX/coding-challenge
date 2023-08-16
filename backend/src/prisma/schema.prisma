@@ -12,7 +12,7 @@ model User {
   username              String                 @unique
   email                 String                 @unique
   password              String
-  questionnaireSessions QuestionnaireUserSession[]
+  questionnaireUserSessions QuestionnaireUserSession[]
 }
 
 model Questionnaire {
@@ -32,7 +32,7 @@ model QuestionPage {
   content                    Json
   questionnaire              Questionnaire                    @relation(fields: [questionnaireId], references: [id])
   questionnaireId            Int
-  questionnaireSessionAnswers QuestionnaireUserSessionAnswer[]
+  questionnaireUserSessions QuestionnaireUserSessionAnswer[]
 }
 
 model QuestionnaireUserSession {
