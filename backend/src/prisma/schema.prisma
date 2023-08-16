@@ -1,0 +1,16 @@
+// Placeholder Prisma schema file
+// Define your Prisma database schema here
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Page {
+  id Int @id @default(autoincrement())
+    // Have the defintion of a page here
+}
+

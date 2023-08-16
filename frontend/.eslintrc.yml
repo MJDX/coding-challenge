@@ -1,0 +1,72 @@
+root: true
+env:
+  browser: true
+  es2021: true
+  node: true
+rules:
+  prettier/prettier: error
+  new-cap: 0 # @Decorators are not detected properly
+overrides:
+  - files:
+      - '**/*.vue'
+    plugins:
+      - 'vue'
+    parser: 'vue-eslint-parser'
+
+    parserOptions:
+      ecmaVersion: 2020
+
+      plugins:
+        - '@typescript-eslint'
+        - 'prettier'
+    extends:
+      - 'plugin:vue/vue3-recommended'
+      - '@vue/typescript/recommended'
+      - '@vue/prettier'
+      - '@vue/prettier/@typescript-eslint'
+    rules:
+      prettier/prettier: error
+      require-jsdoc: 0
+      new-cap: 0 # @Decorators are not detected properly
+      max-len:
+        - 0
+        - tabWidth: 2
+          ignoreStrings: true
+          ignoreTemplateLiterals: true
+          ignoreRegExpLiterals: true
+      '@typescript-eslint/no-explicit-any': 2
+      '@typescript-eslint/explicit-function-return-type': 0
+      '@typescript-eslint/no-unused-vars':
+        - 2
+        - argsIgnorePattern: '^_' # To allow annotating type-graphql decorators
+      'vue/no-v-html': 0 # To allow using v-html directive
+      'vue/require-component-is': 0 # To allow using style and script tags in vue templates
+      'vue/multi-word-component-names': 0
+  - files:
+      - '**/*.ts'
+      - '**/*.tsx'
+    parser: '@typescript-eslint/parser'
+    plugins:
+      - '@typescript-eslint'
+      - 'prettier'
+    extends:
+      - 'plugin:@typescript-eslint/eslint-recommended'
+      - 'plugin:@typescript-eslint/recommended'
+      - 'google'
+      - 'plugin:prettier/recommended'
+    rules:
+      prettier/prettier: error
+      require-jsdoc: 0
+      valid-jsdoc: 0
+      new-cap: 0
+      max-len:
+        - 0
+        - tabWidth: 2
+          ignoreStrings: true
+          ignoreTemplateLiterals: true
+          ignoreRegExpLiterals: true
+      '@typescript-eslint/no-explicit-any': 2
+      '@typescript-eslint/explicit-function-return-type': 0
+      '@typescript-eslint/no-unused-vars':
+        - 1
+        - argsIgnorePattern: '^_'
