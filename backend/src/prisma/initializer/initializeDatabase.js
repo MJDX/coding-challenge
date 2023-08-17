@@ -11,11 +11,12 @@ async function initializeDatabase() {
     const data = JSON.parse(jsonData);
 
     for (const questionnaireData of data) {
-      const { title,questionnaireName, questionPages,resultPage } = questionnaireData;
+      const { title,image,questionnaireName, questionPages,resultPage } = questionnaireData;
 
       const questionnaire = await prisma.questionnaire.create({
         data: {
           title,
+          image,
           questionnaireName,
           questionPages: {
             create: questionPages,

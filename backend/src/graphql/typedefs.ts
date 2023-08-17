@@ -11,6 +11,7 @@ const typeDefs = `#graphql
   type Questionnaire {
     id: Int
     title: String
+    image: String
     questionnaireName: String
     questionPages: [QuestionPage]
     questionnaireUserSessions: [QuestionnaireUserSession]
@@ -53,9 +54,9 @@ const typeDefs = `#graphql
 
   type Mutation {
     refreshToken(refreshToken: String!): RefreshTokenResponse
-    registerUser(username: String, email: String, password: String): User
-    connectUser(username: String, password: String): User
-    createQuestionnaireUserSession(userId: Int, title: String): QuestionnaireUserSession
+    registerUser(username: String, email: String, password: String): AuthenticationResponse
+    connectUser(username: String, password: String): AuthenticationResponse
+    createQuestionnaireUserSession(userId: Int,questionnaireId: Int, title: String): QuestionnaireUserSession
     addOrUpdateAnswer(sessionId: Int, questionPageId: Int, value: String): QuestionnaireUserSessionAnswer
     setSessionSharable(sessionId: Int, sharable: Boolean): QuestionnaireUserSession
     removeQuestionnaireUserSessionAnswer(id: Int!): QuestionnaireUserSessionAnswer
@@ -65,6 +66,15 @@ const typeDefs = `#graphql
   type RefreshTokenResponse {
     accessToken: String
   }
+
+  type AuthenticationResponse {
+    id: Int
+    username: String
+    email: String
+    accessToken: String
+    refreshToken: String
+  }
+
 `;
 
 export default typeDefs;

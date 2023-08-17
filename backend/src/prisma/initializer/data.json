@@ -1,6 +1,7 @@
 [
     {
-        "title": "Color Recommendation Questionnaire",
+        "title": "Paint Recommendation Questionnaire",
+        "image": "https://empire-s3-production.bobvila.com/articles/wp-content/uploads/2017/12/Best_Paint_For_Wood.jpg",
         "questionnaireName": "colorRecommendationQuestionnaire",
         "questionPages": [
             {
@@ -19,13 +20,13 @@
                             {
                                 "label": "Outdoor",
                                 "value": "Outdoor",
-                                "image": "",
+                                "image": "https://www.houselogic.com/wp-content/uploads/2011/03/exterior-house-painting-epspainting-standard_c231db00f6cd6e9389489e72c0f32fe0.jpg",
                                 "showOptionNavigationCondition": null
                             },
                             {
                                 "label": "Indoor",
                                 "value": "Indoor",
-                                "image": "",
+                                "image": "https://media.istockphoto.com/id/1015387276/photo/man-in-a-working-overall.jpg?s=612x612&w=0&k=20&c=SiHLfl9X0lkncWAqyi8llAAG_dg4vk6mFn8JzaatQfk=",
                                 "showOptionNavigationCondition": null
                             }
                         ]
@@ -48,7 +49,7 @@
                             {
                                 "label": "Wood",
                                 "value": "Wood",
-                                "image": "",
+                                "image": "https://images.unsplash.com/photo-1609616039085-3e1b4e7084b6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8d29vZCUyMHN1cmZhY2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80",
                                 "showOptionNavigationCondition": {
                                     "byPageInNavigationTree": {
                                         "pageName": "applicationScopePage",
@@ -61,7 +62,7 @@
                             {
                                 "label": "Mat",
                                 "value": "Mat",
-                                "image": "",
+                                "image": "https://assets-news.housing.com/news/wp-content/uploads/2022/02/17140617/matte-homes1.jpg",
                                 "showOptionNavigationCondition": {
                                     "byPageInNavigationTree": {
                                         "pageName": "applicationScopePage",
@@ -74,7 +75,7 @@
                             {
                                 "label": "Facade",
                                 "value": "Facade",
-                                "image": "",
+                                "image": "https://img.archiexpo.com/images_ae/photo-m2/1616-18033557.jpg",
                                 "showOptionNavigationCondition": {
                                     "byPageInNavigationTree": {
                                         "pageName": "applicationScopePage",
@@ -87,7 +88,7 @@
                             {
                                 "label": "Plaster",
                                 "value": "Plaster",
-                                "image": "",
+                                "image": "https://i.pinimg.com/1200x/da/5c/77/da5c77ed8e475c0f95a031b8414eda54.jpg",
                                 "showOptionNavigationCondition": {
                                     "byPageInNavigationTree": {
                                         "pageName": "applicationScopePage",
@@ -209,13 +210,13 @@
                             {
                                 "label": "Brighter",
                                 "value": "Brighter",
-                                "image": "",
+                                "image": "https://st4.depositphotos.com/40853472/41379/i/450/depositphotos_413795976-stock-photo-texture-grey-uneven-plaster-abstract.jpg",
                                 "showOptionNavigationCondition": null
                             },
                             {
                                 "label": "Darker",
                                 "value": "Darker",
-                                "image": "",
+                                "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjhLGJZ-ncUfYHswp1hDR6Pw5kBr3rtVfl5Q&usqp=CAU",
                                 "showOptionNavigationCondition": null
                             }
                         ]
@@ -238,37 +239,37 @@
                             {
                                 "label": "Red",
                                 "value": "Red",
-                                "image": "",
+                                "image": "https://i.pinimg.com/originals/f3/8c/3e/f38c3e3eb5d5f89451740b367ce8bcb9.jpg",
                                 "showOptionNavigationCondition": null
                             },
                             {
                                 "label": "Blue",
                                 "value": "Blue",
-                                "image": "",
+                                "image": "https://www.bhphotovideo.com/images/images500x500/Rosco_102300792124_E_Colour_079_Just_Blue_163211.jpg",
                                 "showOptionNavigationCondition": null
                             },
                             {
                                 "label": "Green",
                                 "value": "Green",
-                                "image": "",
+                                "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAA1BMVEUETkyx4/o2AAAASElEQVR4nO3BgQAAAADDoPlTX+AIVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwDcaiAAFXD1ujAAAAAElFTkSuQmCC",
                                 "showOptionNavigationCondition": null
                             },
                             {
                                 "label": "Yellow",
                                 "value": "Yellow",
-                                "image": "",
+                                "image": "https://cdn11.bigcommerce.com/s-3uewkq06zr/products/224/images/399/yellow__96658.1492486792.500.750.png?c=2",
                                 "showOptionNavigationCondition": null
                             },
                             {
                                 "label": "Black",
                                 "value": "Black",
-                                "image": "",
+                                "image": "https://cdn11.bigcommerce.com/s-3uewkq06zr/images/stencil/500x659/products/249/482/black__23021.1501613622.png?c=2",
                                 "showOptionNavigationCondition": null
                             },
                             {
                                 "label": "White",
                                 "value": "White",
-                                "image": "",
+                                "image": "https://www.worldplumbing.org/wp-content/uploads/2016/11/white-background-500x500.jpg",
                                 "showOptionNavigationCondition": null
                             }
                         ]
@@ -292,7 +293,7 @@
                         {
                             "label": "Paint bucket 15L white",
                             "value": "PaintBucket15LWhite",
-                            "image": "",
+                            "image": "https://5.imimg.com/data5/OG/CB/FH/SELLER-47616078/15l-white-plastic-paint-bucket.png",
                             "recommendationMatrixColumn": [
                                 {
                                     "pageName": "applicationScopePage",
@@ -344,7 +345,7 @@
                         {
                             "label": "Paint bucket 15L Black",
                             "value": "PaintBucket15LBlack",
-                            "image": "",
+                            "image": "https://media.istockphoto.com/id/1454243564/photo/black-5-gallon-pail-on-white-background.jpg?b=1&s=612x612&w=0&k=20&c=pETqNKgBMU4QOrXtreClS1xIyQ8gYlklgdkVwT10LuQ=",
                             "recommendationMatrixColumn": [
                                 {
                                     "pageName": "applicationScopePage",
@@ -396,7 +397,7 @@
                         {
                             "label": "Paint bucket 15L Blue",
                             "value": "PaintBucket15LBlue",
-                            "image": "",
+                            "image": "https://image.made-in-china.com/202f0j00vRWbKzdafwcH/15L-Plastic-Lubricating-Oil-Paint-Bucket-for-Paint-Coating-Limstone-Chemicals.jpg",
                             "recommendationMatrixColumn": [
                                 {
                                     "pageName": "applicationScopePage",
@@ -448,7 +449,7 @@
                         {
                             "label": "Paint bucket 15L Red",
                             "value": "PaintBucket15LRed",
-                            "image": "",
+                            "image": "https://image.made-in-china.com/2f0j00tmPQIiTROwoV/15L-Hot-Red-HDPE-Industrial-Bucket-with-Steel-Handle.webp",
                             "recommendationMatrixColumn": [
                                 {
                                     "pageName": "applicationScopePage",
@@ -500,7 +501,7 @@
                         {
                             "label": "Paint bucket 15L Green",
                             "value": "PaintBucket15LGreen",
-                            "image": "",
+                            "image": "https://5.imimg.com/data5/SELLER/Default/2022/1/UQ/AX/PK/80682326/plastic-bucket-500x500.jpeg",
                             "recommendationMatrixColumn": [
                                 {
                                     "pageName": "applicationScopePage",
@@ -552,7 +553,7 @@
                         {
                             "label": "Paint bucket 15L Yellow",
                             "value": "PaintBucket15LYellow",
-                            "image": "",
+                            "image": "https://image.made-in-china.com/202f0j00ESgTGFyKhDUZ/Silkscreen-Printing-Plastic-Bucket-Craft-Paint-Bucket-15L.webp",
                             "recommendationMatrixColumn": [
                                 {
                                     "pageName": "applicationScopePage",

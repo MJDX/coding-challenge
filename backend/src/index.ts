@@ -46,13 +46,11 @@ async function main() {
 
   app.use(bodyParser.json());
 
-  app.use(expressMiddleware(server));
   app.use(
     expressMiddleware(server, {
       context: async ({ req }) => {
-        const accessToken = req.headers.authorization || ''; 
+        const accessToken = req.headers.authorization?.replace("Bearer ", "") || ''; 
         const accessSecretKey = process.env.ACCESS_SECRET_KEY ; 
-  
         if (!accessSecretKey) {
           return {};
         }
@@ -61,6 +59,7 @@ async function main() {
           const userId = decodedToken.userId;
           return { user: { userId } }; 
         } catch (error) {
+          console.error(error)
           return {}; 
         }
       },

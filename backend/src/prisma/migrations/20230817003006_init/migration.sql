@@ -12,6 +12,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Questionnaire" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
     "questionnaireName" TEXT NOT NULL,
     "resultPage" JSONB NOT NULL,
 
