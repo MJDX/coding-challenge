@@ -21,18 +21,18 @@
 
                     <div class="flex items-center gap-4">
                         <div class="sm:flex sm:gap-4">
-                            <a class="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow" href="/login">
+                            <a v-if="!authStore.isAuthenticated" class="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow" href="/login">
                                 Login
                             </a>
 
                             <div class="hidden sm:flex">
-                                <a class="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600" href="/register">
+                                <a v-if="!authStore.isAuthenticated" class="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600" href="/register">
                                     Register
                                 </a>
                             </div>
 
                             <div class="hidden sm:flex">
-                                <a class="rounded-md bg-red-100 px-5 py-2.5 text-sm font-medium text-red-900" href="/register">
+                                <a v-if="authStore.isAuthenticated" @click="logout()" class="rounded-md bg-red-100 px-5 py-2.5 text-sm font-medium text-red-900" href="/">
                                     Logout
                                 </a>
                             </div>
@@ -54,6 +54,12 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '../store/store';
+const authStore = useAuthStore();
+
+function logout(){
+    authStore.logout()
+}
 
 </script>
 

@@ -27,7 +27,7 @@ import QuestionPage from './questionPage/QuestionPage.vue'
 import ResultPage from './resultPage/ResultPage.vue'
 import Navigation from './navigation/Navigation.vue';
 import LoadingSpinner from '../../custom/LoadingSpinner.vue';
-import { AddAnswer, DeleteAnswersByQuestionnaireId, EditAnswer, GetQuestionnaireByQuestionnaireName } from '../../../services/queries/graphqlAPI';
+// import { AddAnswer, DeleteAnswersByQuestionnaireId, EditAnswer, GetQuestionnaireByQuestionnaireName } from '../../../services/queries/graphqlAPI';
 import { QuestionnaireType, NavigationTreeItemType, QuestionPageType, ResultPageType, AnswerOptionType, QuestionnaireUserSessionAnswer } from '../../../types/types';
 import * as Factory from '../../../types/factory';
 

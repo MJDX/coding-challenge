@@ -9,7 +9,8 @@
                 Product recommendation, get started now!
             </p>
 
-            <form action="" class="mb-0 mt-6 grid grid-cols-6 gap-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8">
+            <form @submit.prevent="register"
+                class="mb-0 mt-6 grid grid-cols-6 gap-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8">
                 <p class="col-span-6 text-center text-lg font-medium text-gray-500">Create an account</p>
 
 
@@ -18,7 +19,7 @@
                         Username
                     </label>
 
-                    <input type="text" id="Username" name="username"
+                    <input type="text" id="Username" name="username" v-model="username"
                         class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" />
                 </div>
 
@@ -27,7 +28,7 @@
                         Email
                     </label>
 
-                    <input type="email" id="Email" name="email"
+                    <input type="email" id="Email" name="email" v-model="email"
                         class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" />
                 </div>
 
@@ -36,7 +37,7 @@
                         Password
                     </label>
 
-                    <input type="password" id="Password" name="password"
+                    <input type="password" id="Password" name="password" v-model="password"
                         class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" />
                 </div>
 
@@ -46,6 +47,7 @@
                     </label>
 
                     <input type="password" id="PasswordConfirmation" name="password_confirmation"
+                        v-model="passwordConfirmation"
                         class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" />
                 </div>
 
@@ -58,12 +60,59 @@
                     Already have an account?
                     <a class="underline" href="/login">Log in</a>
                 </p>
+                <p v-if="errorMessage" class="col-span-6 text-center text-red-900">
+                    {{ errorMessage }}
+                </p>
             </form>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+
+import { ref } from 'vue';
+import { REGISTER_USER } from '../../services/queries/graphqlAPI';
+import { useAuthStore } from '../../store/store';
+
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const authStore = useAuthStore();
+
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const passwordConfirmation = ref('');
+const errorMessage = ref('');
+
+const register = async () => {
+    try {
+        // Check if passwords match
+        if (password.value !== passwordConfirmation.value) {
+            errorMessage.value = "Passwords do not match";
+            return;
+        }
+
+        // Call the mutation to register user
+        const user = await REGISTER_USER(username.value, email.value, password.value);
+
+        // Update the auth store with user and tokens
+        authStore.setUser(user);
+        authStore.setTokens({
+            accessToken: user.accessToken,
+            refreshToken: user.refreshToken,
+        });
+
+        // Clear form fields and error message
+        username.value = '';
+        email.value = '';
+        password.value = '';
+        passwordConfirmation.value = '';
+        errorMessage.value = '';
+        router.push({ name: 'Home' });
+    } catch (error) {
+        errorMessage.value = "Error registering user"; // Update error message as needed
+    }
+};
 
 </script>
 

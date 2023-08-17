@@ -67,8 +67,9 @@ export type QuestionPageType =
 
 export type QuestionnaireType =
     {
-        id: number,
+        id: number
         title: string
+        image: string
         questionnaireName: string
         questionPages: QuestionPageType[]
         resultPage: ResultPageType
