@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import Button from '../../../custom/Button.vue';
 import CardRecommendation from './recommendation_types/CardRecommendation.vue'
-import { QuestionPageType, RecommendationOptionType, ResultPageType } from '../../../../types/types';
+import { QuestionnaireUserSession, RecommendationOptionType, ResultPageType } from '../../../../types/types';
 import { ref } from 'vue';
 import { getRecommendedProducts } from '../../../../services/RecommendationModel';
 
@@ -40,13 +40,13 @@ import { getRecommendedProducts } from '../../../../services/RecommendationModel
 
 
 
-const {resultPage,answeredPages} = defineProps({
+const {resultPage,questionnaireUserSession} = defineProps({
     resultPage: {
         type: Object as () => ResultPageType,
         default: null,
     },
-    answeredPages: {
-        type: Array as () => QuestionPageType[],
+    questionnaireUserSession: {
+        type: Object as () => QuestionnaireUserSession,
         default: null,
     }
 });
@@ -54,10 +54,7 @@ const {resultPage,answeredPages} = defineProps({
 
 var recommendationList = ref<RecommendationOptionType[]>();
 
-recommendationList.value = getRecommendedProducts(answeredPages,resultPage.content.recommendationOptions.options)
-
-console.log("recommendationList.value");
-console.log(recommendationList.value);
+recommendationList.value = getRecommendedProducts(questionnaireUserSession,resultPage.content.recommendationOptions.options)
 
 
 const onRecommendationClick = (recommendationItem: RecommendationOptionType) => {
@@ -66,8 +63,6 @@ const onRecommendationClick = (recommendationItem: RecommendationOptionType) => 
 
 const emit = defineEmits(["onResultresultPagePreviousClicked", "onResultresultPageResetQuestionnaireClicked"])
 function handleButtonClickEvent(buttonName: String) {
-    console.log(buttonName);
-    
     switch (buttonName) {
         case "PreviousQuestion": {
             emit('onResultresultPagePreviousClicked');

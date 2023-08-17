@@ -4,9 +4,9 @@ import { gql } from 'graphql-tag';
 
 
 export const GET_QUESTIONNAIRES = async () => {
-    try {
-        const response = await apolloClient.query({
-            query: gql`
+  try {
+    const response = await apolloClient.query({
+      query: gql`
           query GetQuestionnaires {
             questionnaires {
               id
@@ -16,22 +16,20 @@ export const GET_QUESTIONNAIRES = async () => {
             }
           }
         `,
-        });
+    });
 
-        return response.data.questionnaires;
-    } catch (error) {
-        console.error("Error fetching questionnaires:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.questionnaires;
+  } catch (error) {
+    console.error("Error fetching questionnaires:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 export const GET_QUESTIONNAIRE_USER_SESSIONS_BY_USER = async (questionnaireId: number, userId: number) => {
-    try {
-      console.log("here");
-      
-        const response = await apolloClient.query({
-            query: gql`
+  try {
+    const response = await apolloClient.query({
+      query: gql`
         query GetQuestionnaireUserSessionsByUser($questionnaireId: Int!, $userId: Int!) {
           questionnaireUserSessionsByUser(questionnaireId: $questionnaireId, userId: $userId) {
             id
@@ -50,54 +48,57 @@ export const GET_QUESTIONNAIRE_USER_SESSIONS_BY_USER = async (questionnaireId: n
           }
         }
       `,
-            variables: { questionnaireId, userId },
-        });
-        console.log("then here");
-        console.log(response);
-        
-        return response.data.questionnaireUserSessionsByUser
-        ;
-    } catch (error) {
-        console.error("Error fetching questionnaire user sessions:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+      variables: { questionnaireId, userId },
+    });
+
+    return response.data.questionnaireUserSessionsByUser
+      ;
+  } catch (error) {
+    console.error("Error fetching questionnaire user sessions:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 export const GET_SHARABLE_QUESTIONNAIRE_USER_SESSIONS = async (questionnaireId: number) => {
-    try {
-        const response = await apolloClient.query({
-            query: gql`
+  try {
+    const response = await apolloClient.query({
+      query: gql`
           query GetSharableQuestionnaireUserSessions($questionnaireId: Int!) {
             sharableQuestionnaireUserSessions(questionnaireId: $questionnaireId) {
               id
               title
-              userId
+              user{
+                id
+                username
+                email
+              }
               sharable
               questionnaire {
                 id
                 title
+                image
               }
             }
           }
         `,
-            variables: { questionnaireId },
-        });
+      variables: { questionnaireId },
+    });
 
-        return response.data.sharableQuestionnaireUserSessions;
-    } catch (error) {
-        console.error("Error fetching sharable questionnaire user sessions:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.sharableQuestionnaireUserSessions;
+  } catch (error) {
+    console.error("Error fetching sharable questionnaire user sessions:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 
 export const GET_SHARABLE_QUESTIONNAIRE_USER_SESSIONS_WITHOUT_OWNED = async (questionnaireId: number, userId: number) => {
-    try {
-        const response = await apolloClient.query({
-            query: gql`
-          query GetSharableQuestionnaireUserSessionsWithoutOwned(
+  try {
+    const response = await apolloClient.query({
+      query: gql`
+          query SharableQuestionnaireUserSessionsWithoutUserOwnedOnes(
             $questionnaireId: Int!
             $userId: Int!
           ) {
@@ -107,30 +108,35 @@ export const GET_SHARABLE_QUESTIONNAIRE_USER_SESSIONS_WITHOUT_OWNED = async (que
             ) {
               id
               title
-              userId
+              user{
+                id
+                username
+                email
+              }
               sharable
               questionnaire {
                 id
                 title
+                image
               }
             }
           }
         `,
-            variables: { questionnaireId, userId },
-        });
+      variables: { questionnaireId, userId },
+    });
 
-        return response.data.sharableQuestionnaireUserSessionsWithoutOwned;
-    } catch (error) {
-        console.error("Error fetching sharable questionnaire user sessions without owned:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.sharableQuestionnaireUserSessionsWithoutUserOwnedOnes;
+  } catch (error) {
+    console.error("Error fetching sharable questionnaire user sessions without owned:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 export const GET_FULL_QUESTIONNAIRE_USER_SESSION = async (questionnaireUserSessionId: number) => {
-    try {
-        const response = await apolloClient.query({
-            query: gql`
+  try {
+    const response = await apolloClient.query({
+      query: gql`
           query GetFullQuestionnaireUserSession($questionnaireUserSessionId: Int!) {
             getFullQuestionnaireUserSession(questionnaireUserSessionId: $questionnaireUserSessionId) {
               id
@@ -171,44 +177,44 @@ export const GET_FULL_QUESTIONNAIRE_USER_SESSION = async (questionnaireUserSessi
             }
           }
         `,
-            variables: { questionnaireUserSessionId },
-        });
+      variables: { questionnaireUserSessionId },
+    });
 
-        return response.data.getFullQuestionnaireUserSession;
-    } catch (error) {
-        console.error("Error fetching full questionnaire user session:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.getFullQuestionnaireUserSession;
+  } catch (error) {
+    console.error("Error fetching full questionnaire user session:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 
 export const REFRESH_TOKEN = async (refreshToken: string) => {
-    try {
-        const response = await apolloClient.mutate({
-            mutation: gql`
+  try {
+    const response = await apolloClient.mutate({
+      mutation: gql`
           mutation RefreshToken($refreshToken: String!) {
             refreshToken(refreshToken: $refreshToken) {
               accessToken
             }
           }
         `,
-            variables: { refreshToken },
-        });
+      variables: { refreshToken },
+    });
 
-        return response.data.refreshToken.accessToken;
-    } catch (error) {
-        console.error("Error refreshing token:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.refreshToken.accessToken;
+  } catch (error) {
+    console.error("Error refreshing token:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 
 export const REGISTER_USER = async (username: string, email: string, password: string) => {
-    try {
-        const response = await apolloClient.mutate({
-            mutation: gql`
+  try {
+    const response = await apolloClient.mutate({
+      mutation: gql`
           mutation RegisterUser($username: String!, $email: String!, $password: String!) {
             registerUser(username: $username, email: $email, password: $password) {
               id
@@ -219,22 +225,22 @@ export const REGISTER_USER = async (username: string, email: string, password: s
             }
           }
         `,
-            variables: { username, email, password },
-        });
+      variables: { username, email, password },
+    });
 
-        return response.data.registerUser;
-    } catch (error) {
-        console.error("Error registering user:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.registerUser;
+  } catch (error) {
+    console.error("Error registering user:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 
 export const CONNECT_USER = async (username: string, password: string) => {
-    try {
-        const response = await apolloClient.mutate({
-            mutation: gql`
+  try {
+    const response = await apolloClient.mutate({
+      mutation: gql`
           mutation ConnectUser($username: String!, $password: String!) {
             connectUser(username: $username, password: $password) {
               id
@@ -245,22 +251,22 @@ export const CONNECT_USER = async (username: string, password: string) => {
             }
           }
         `,
-            variables: { username, password },
-        });
-        
-        return response.data.connectUser;
-    } catch (error) {
-        console.error("Error connecting user:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+      variables: { username, password },
+    });
+
+    return response.data.connectUser;
+  } catch (error) {
+    console.error("Error connecting user:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 
 export const CREATE_QUESTIONNAIRE_USER_SESSION = async (userId: number, title: string, questionnaireId: number) => {
-    try {
-        const response = await apolloClient.mutate({
-            mutation: gql`
+  try {
+    const response = await apolloClient.mutate({
+      mutation: gql`
           mutation CreateQuestionnaireUserSession(
             $userId: Int!
             $title: String!
@@ -278,21 +284,21 @@ export const CREATE_QUESTIONNAIRE_USER_SESSION = async (userId: number, title: s
             }
           }
         `,
-            variables: { userId, title, questionnaireId },
-        });
+      variables: { userId, title, questionnaireId },
+    });
 
-        return response.data.createQuestionnaireUserSession;
-    } catch (error) {
-        console.error("Error creating questionnaire user session:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.createQuestionnaireUserSession;
+  } catch (error) {
+    console.error("Error creating questionnaire user session:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 export const ADD_OR_UPDATE_ANSWER = async (id: number | undefined, questionnaireUserSessionId: number, questionPageId: number, value: string) => {
-    try {
-        const response = await apolloClient.mutate({
-            mutation: gql`
+  try {
+    const response = await apolloClient.mutate({
+      mutation: gql`
           mutation AddOrUpdateAnswer(
             $id: Int
             $questionnaireUserSessionId: Int!
@@ -308,25 +314,29 @@ export const ADD_OR_UPDATE_ANSWER = async (id: number | undefined, questionnaire
               id
               questionnaireUserSessionId
               questionPageId
+              questionPage{
+                id
+                pageName
+              }
               value
             }
           }
         `,
-            variables: { id, questionnaireUserSessionId, questionPageId, value },
-        });
+      variables: { id, questionnaireUserSessionId, questionPageId, value },
+    });
 
-        return response.data.addOrUpdateAnswer;
-    } catch (error) {
-        console.error("Error adding or updating answer:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.addOrUpdateAnswer;
+  } catch (error) {
+    console.error("Error adding or updating answer:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 export const SET_SESSION_SHARABLE = async (questionnaireUserSessionId: number, sharable: boolean) => {
-    try {
-        const response = await apolloClient.mutate({
-            mutation: gql`
+  try {
+    const response = await apolloClient.mutate({
+      mutation: gql`
           mutation SetSessionSharable(
             $questionnaireUserSessionId: Int!
             $sharable: Boolean!
@@ -342,21 +352,21 @@ export const SET_SESSION_SHARABLE = async (questionnaireUserSessionId: number, s
             }
           }
         `,
-            variables: { questionnaireUserSessionId, sharable },
-        });
+      variables: { questionnaireUserSessionId, sharable },
+    });
 
-        return response.data.setSessionSharable;
-    } catch (error) {
-        console.error("Error setting session sharable:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.setSessionSharable;
+  } catch (error) {
+    console.error("Error setting session sharable:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 export const REMOVE_ANSWER = async (id: number) => {
-    try {
-        const response = await apolloClient.mutate({
-            mutation: gql`
+  try {
+    const response = await apolloClient.mutate({
+      mutation: gql`
           mutation RemoveQuestionnaireUserSessionAnswer($id: Int!) {
             removeQuestionnaireUserSessionAnswer(id: $id) {
               id
@@ -366,37 +376,35 @@ export const REMOVE_ANSWER = async (id: number) => {
             }
           }
         `,
-            variables: { id },
-        });
+      variables: { id },
+    });
 
-        return response.data.removeQuestionnaireUserSessionAnswer;
-    } catch (error) {
-        console.error("Error removing answer:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.removeQuestionnaireUserSessionAnswer;
+  } catch (error) {
+    console.error("Error removing answer:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 
-export const REMOVE_ANSWERS_BY_SESSION_ID = async (sessionId: number) => {
-    try {
-        const response = await apolloClient.mutate({
-            mutation: gql`
-          mutation RemoveQuestionnaireUserSessionAnswersBySessionId($sessionId: Int!) {
-            removeQuestionnaireUserSessionAnswersBySessionId(sessionId: $sessionId) {
-              count
-            }
+export const REMOVE_ANSWERS_BY_SESSION_ID = async (questionnaireUserSessionId: number) => {
+  try {
+    const response = await apolloClient.mutate({
+      mutation: gql`
+          mutation RemoveQuestionnaireUserSessionAnswersBySessionId($questionnaireUserSessionId: Int!) {
+            removeQuestionnaireUserSessionAnswersBySessionId(questionnaireUserSessionId: $questionnaireUserSessionId)
           }
         `,
-            variables: { sessionId },
-        });
+      variables: { questionnaireUserSessionId },
+    });
 
-        return response.data.removeQuestionnaireUserSessionAnswersBySessionId.count;
-    } catch (error) {
-        console.error("Error removing answers by session ID:");
-        console.error(JSON.stringify(error, null, 2));
-        throw error;
-    }
+    return response.data.removeQuestionnaireUserSessionAnswersBySessionId;
+  } catch (error) {
+    console.error("Error removing answers by session ID:");
+    console.error(JSON.stringify(error, null, 2));
+    throw error;
+  }
 };
 
 // export async function GetQuestionnaireByQuestionnaireName(questionnaireName: String)

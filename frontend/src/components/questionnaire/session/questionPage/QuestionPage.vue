@@ -44,7 +44,7 @@ import ButtonAnswer from './answer_types/ButtonAnswer.vue';
 import SliderAnswer from './answer_types/SliderAnswer.vue';
 import Button from '../../../custom/Button.vue';
 import { ref, watch } from 'vue';
-import { QuestionPageType, AnswerOptionType, NavigationTreeItemType } from '../../../../types/types';
+import { QuestionPageType, AnswerOptionType, NavigationTreeItemType, QuestionnaireUserSessionAnswer } from '../../../../types/types';
 
 
 
@@ -52,6 +52,10 @@ import { QuestionPageType, AnswerOptionType, NavigationTreeItemType } from '../.
 const props = defineProps({
     page: {
         type: Object as () => QuestionPageType,
+        default: null,
+    },
+    pageAnswerBySession: {
+        type: Object as () => QuestionnaireUserSessionAnswer,
         default: null,
     },
     navTree: {
@@ -64,14 +68,15 @@ const temporaryAnswer = ref<AnswerOptionType>();
 
 //init temporary answer
 const page = props.page;
-if (page && page.questionnaireUserSessionAnswers && page.questionnaireUserSessionAnswers.value && page.content.answerOptions && page.content.answerOptions.options) {
-    temporaryAnswer.value = page.content.answerOptions.options.find(option => option.value === page.questionnaireUserSessionAnswers.value);
+const pageAnswerBySession = props.pageAnswerBySession;
+if (page && pageAnswerBySession && pageAnswerBySession.value && page.content.answerOptions && page.content.answerOptions.options) {
+    temporaryAnswer.value = page.content.answerOptions.options.find(option => option.value === pageAnswerBySession.value);
 }
 
 watch(props.page, (newValue, _oldValue) => {
     const page = newValue;
-    if (page && page.questionnaireUserSessionAnswers && page.questionnaireUserSessionAnswers.value && page.content.answerOptions && page.content.answerOptions.options) {
-        temporaryAnswer.value = page.content.answerOptions.options.find(option => option.value === page.questionnaireUserSessionAnswers.value);
+    if (page && pageAnswerBySession && pageAnswerBySession.value && page.content.answerOptions && page.content.answerOptions.options) {
+        temporaryAnswer.value = page.content.answerOptions.options.find(option => option.value === pageAnswerBySession.value);
     }
 });
 
@@ -89,7 +94,6 @@ function shouldShowOption(option: AnswerOptionType): boolean {
     }
 
     if (!props.navTree) {
-        console.log("no navigation provided");
         return true;
     }
 
@@ -98,7 +102,7 @@ function shouldShowOption(option: AnswerOptionType): boolean {
         const targetPageName = condition.byPageInNavigationTree.pageName;
         const expectedValue = condition.byPageInNavigationTree.byQuestionAnswer.value;
         const correspondingNavItem = props.navTree.find(navItem => navItem.pageName === targetPageName);
-        if (correspondingNavItem && correspondingNavItem.selectedAnswer.value === expectedValue) {
+        if (correspondingNavItem && correspondingNavItem.selectedAnswer && correspondingNavItem.selectedAnswer.value === expectedValue) {
             return true;
         }
     }

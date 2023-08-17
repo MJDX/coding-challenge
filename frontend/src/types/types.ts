@@ -101,6 +101,7 @@ export type User = {
 export type QuestionnaireUserSessionAnswer = {
     id: number
     questionnaireUserSessionId: number
+    questionPage: QuestionPageType
     questionPageId: number
     value: string
 };

@@ -58,10 +58,10 @@ const typeDefs = `#graphql
     registerUser(username: String, email: String, password: String): AuthenticationResponse
     connectUser(username: String, password: String): AuthenticationResponse
     createQuestionnaireUserSession(userId: Int,questionnaireId: Int, title: String): QuestionnaireUserSession
-    addOrUpdateAnswer(sessionId: Int, questionPageId: Int, value: String): QuestionnaireUserSessionAnswer
-    setSessionSharable(sessionId: Int, sharable: Boolean): QuestionnaireUserSession
+    addOrUpdateAnswer(id: Int,questionnaireUserSessionId: Int!, questionPageId: Int!, value: String!): QuestionnaireUserSessionAnswer
+    setSessionSharable(questionnaireUserSessionId: Int, sharable: Boolean): QuestionnaireUserSession
     removeQuestionnaireUserSessionAnswer(id: Int!): QuestionnaireUserSessionAnswer
-    removeQuestionnaireUserSessionAnswersBySessionId(sessionId: Int!): [QuestionnaireUserSessionAnswer]
+    removeQuestionnaireUserSessionAnswersBySessionId(questionnaireUserSessionId: Int!): Int
   }
   
   type RefreshTokenResponse {

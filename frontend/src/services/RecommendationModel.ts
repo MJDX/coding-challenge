@@ -1,6 +1,7 @@
-import { QuestionPageType, RecommendationOptionType } from "../types/types";
+import { QuestionnaireUserSession, RecommendationOptionType } from "../types/types";
 
-export function getRecommendedProducts(answeredPages: QuestionPageType[],
+export function getRecommendedProducts(
+    questionnaireUserSession: QuestionnaireUserSession,
     recommendationOptions: RecommendationOptionType[])
     : RecommendationOptionType[] {
     let recList: RecommendationOptionType[] = []
@@ -9,22 +10,24 @@ export function getRecommendedProducts(answeredPages: QuestionPageType[],
         let isValidRecommendation = true;
         recommendationOption.recommendationMatrixColumn.some(
             cell => {
-                let correspondingAnsweredPage
-                    = answeredPages.find(answeredPage => {
-                        return answeredPage.pageName === cell.pageName
+                let correspondingQuestionnaireUserSessionAnswer
+                    = questionnaireUserSession.questionnaireUserSessionAnswers.find(qUSA => {
+                        return qUSA.questionPage.pageName === cell.pageName
                     });
-                if (correspondingAnsweredPage == null) {
-                    // in this case we shouldn't recommend the product
-                    isValidRecommendation = false;
-                    // break off the loop
-                    return true;
-                }
-                if (correspondingAnsweredPage.answer == null) {
+                if (!correspondingQuestionnaireUserSessionAnswer) {
+                    // // in this case we shouldn't recommend the product
+                    // isValidRecommendation = false;
+                    // // break off the loop
+                    // return true;
                     // answer not provided , ignore this case
-                    // continue
                     return false;
                 }
-                if (!cell.answers.includes(correspondingAnsweredPage.answer.value)) {
+                // if (!correspondingQuestionnaireUserSessionAnswer.value) {
+                //     // answer not provided , ignore this case
+                //     // continue
+                //     return false;
+                // }
+                if (!cell.answers.includes(correspondingQuestionnaireUserSessionAnswer.value)) {
                     // the answer is not one of the accepted answers in recommendation matrix (equivalent to 0 in matrix cell)
                     // in this case we shouldn't recommend the product
                     isValidRecommendation = false;

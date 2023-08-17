@@ -29,8 +29,6 @@ const props = defineProps({
 
 const emit = defineEmits(["onNavItemClick"])
 function onNavItemClick(clickedNavItem: NavigationTreeItemType) {
-    console.log(props.currentNavItem);
-    
     emit('onNavItemClick', clickedNavItem);
 }
 

@@ -59,7 +59,7 @@ async function main() {
           const userId = decodedToken.userId;
           return { user: { userId } }; 
         } catch (error) {
-          console.error(error)
+          // console.error(error)
           return {}; 
         }
       },

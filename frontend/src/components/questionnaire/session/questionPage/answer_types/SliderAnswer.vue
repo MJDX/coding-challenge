@@ -33,7 +33,7 @@
   
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { AnswerOptionType } from '../../../../types/types';
+import { AnswerOptionType } from '../../../../../types/types';
 
 const props = defineProps({
     listOfOptions: {
@@ -44,10 +44,6 @@ const props = defineProps({
         type: Object as () => AnswerOptionType
     }
 });
-
-console.log("selectedOption");
-console.log(props.selectedOption);
-
 
 const { listOfOptions } = props;
 
@@ -61,8 +57,6 @@ if (props.selectedOption != null) {
         
         if (option.value === props.selectedOption?.value) {
             selectedOptionPosition.value = index;
-            console.log("index");
-            console.log(index);
             
             return true;
         }

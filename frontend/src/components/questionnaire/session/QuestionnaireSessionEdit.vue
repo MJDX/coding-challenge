@@ -8,11 +8,12 @@
                 <Progress :progress="progress" />
             </div>
             <template v-if="!loading">
-                <QuestionPage v-if="isQuestionPage(currentPage)" :page="currentPage" :navTree="navigationTree"
+                <QuestionPage v-if="isQuestionPage(currentPage)" :page="currentPage"
+                    :pageAnswerBySession="currentPageAnswer" :navTree="navigationTree"
                     @onQuestionPagePreviousClicked="handleOnQuestionPagePreviousClicked"
                     @onQuestionPageNextClicked="handleOnQuestionPageNextClicked" />
                 <ResultPage v-else-if="isResultPage(currentPage)" :resultPage="currentPage"
-                    :answeredPages="questionnaire.questionPages"
+                    :questionnaireUserSession="questionnaireUserSession"
                     @on-resultresult-page-previous-clicked="handleOnResultPagePreviousClicked"
                     @on-resultresult-page-reset-questionnaire-clicked="handleOnResultPageResetQuestionnaireClicked" />
             </template>
@@ -21,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref} from 'vue';
 import Progress from './progress/Progress.vue';
 import QuestionPage from './questionPage/QuestionPage.vue'
 import ResultPage from './resultPage/ResultPage.vue'
@@ -30,12 +31,13 @@ import LoadingSpinner from '../../custom/LoadingSpinner.vue';
 // import { AddAnswer, DeleteAnswersByQuestionnaireId, EditAnswer, GetQuestionnaireByQuestionnaireName } from '../../../services/queries/graphqlAPI';
 import { QuestionnaireType, NavigationTreeItemType, QuestionPageType, ResultPageType, AnswerOptionType, QuestionnaireUserSessionAnswer, QuestionnaireUserSession } from '../../../types/types';
 import * as Factory from '../../../types/factory';
-import { useRouter, useRoute } from 'vue-router';
-import { useAuthStore } from '../../../store/store';
+// import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
+// import { useAuthStore } from '../../../store/store';
 import { GET_FULL_QUESTIONNAIRE_USER_SESSION, ADD_OR_UPDATE_ANSWER, REMOVE_ANSWERS_BY_SESSION_ID } from '../../../services/queries/graphqlAPI';
 
-const authStore = useAuthStore();
-const router = useRouter();
+// const authStore = useAuthStore();
+// const router = useRouter();
 
 const route = useRoute();
 
@@ -44,35 +46,44 @@ const questionnaire = reactive<QuestionnaireType>(Factory.createDefaultQuestionn
 const navigationTree = ref<NavigationTreeItemType[]>([]);
 const currentNavigationItem = ref<NavigationTreeItemType>();
 const currentPage: QuestionPageType | ResultPageType = reactive(Factory.createDefaultQuestionPage());
+const currentPageAnswer: QuestionnaireUserSessionAnswer = reactive(Factory.createDefaultQuestionnaireUserSessionAnswer());
 const currentPageIndex = ref<number>(0);
 const progress = ref<number>(0);
 
-const questionnaireId = Number(route.params.questionnaireId);
+// const questionnaireId = Number(route.params.questionnaireId);
 const sessionId = Number(route.params.sessionId);
-const userId = Number(authStore.user?.id);
+// const userId = Number(authStore.user?.id);
 const questionnaireUserSession = ref<QuestionnaireUserSession>();
 
 fetchFullSession()
 
 async function fetchFullSession() {
-    console.log('Loading Questionnaire...');
-
     questionnaireUserSession.value = await GET_FULL_QUESTIONNAIRE_USER_SESSION(sessionId);
     loading.value = false;
-    console.log(questionnaireUserSession.value);
-
     Object.assign(questionnaire, questionnaireUserSession.value?.questionnaire);
-    console.log(questionnaire);
+    buildNavigationToLatestUnAnsweredQuestionPageOrResultPage();
+
+}
+
+function buildNavigationToLatestUnAnsweredQuestionPageOrResultPage() {
     setCurrentPageBySpecificIndex(0);
-    clearNavigationTree()
+    clearNavigationTree();
+    
     if (isQuestionPage(currentPage)) {
         pushPageToNavigationTree(currentPage);
         currentNavigationItem.value = navigationTree.value[navigationTree.value.length - 1]
     }
 
+    let currentAnswer = questionnaireUserSession.value?.questionnaireUserSessionAnswers
+        .find(qUSA => qUSA.questionPageId === (currentPage as QuestionPageType).id);
+
+    while (currentAnswer && currentPageIndex.value < questionnaire.questionPages.length) {
+        navigateForward();
+        currentAnswer = questionnaireUserSession.value?.questionnaireUserSessionAnswers
+            .find(qUSA => qUSA.questionPageId === (currentPage as QuestionPageType).id);
+    }
+
 }
-
-
 async function addOrEditAnswer(
     answer: AnswerOptionType) {
 
@@ -80,25 +91,36 @@ async function addOrEditAnswer(
         .find(qUSA => qUSA.questionPageId === (currentPage as QuestionPageType).id);
 
 
-    const response = await ADD_OR_UPDATE_ANSWER(
-        currentAnswer?.id,
-        questionnaireUserSession.value!.id,
-        (currentPage as QuestionPageType).id,
-        answer.value);
+    let response;
+
+    if (currentAnswer) {
+        response = await ADD_OR_UPDATE_ANSWER(
+            currentAnswer.id,
+            questionnaireUserSession.value!.id,
+            (currentPage as QuestionPageType).id,
+            answer.value);
+
+    } else {
+        response = await ADD_OR_UPDATE_ANSWER(
+            undefined,
+            questionnaireUserSession.value!.id,
+            (currentPage as QuestionPageType).id,
+            answer.value);
+
+    }
+
 
     if (response) {
         updateCurrentPageWithAnswer(response);
         navigateForward();
     }
 
-
-
 }
 
 async function deleteAllAnswers() {
 
     const response = await REMOVE_ANSWERS_BY_SESSION_ID(questionnaireUserSession.value!.id);
-    if(response){
+    if (response) {
         fetchFullSession();
     }
 
@@ -106,13 +128,13 @@ async function deleteAllAnswers() {
 
 function isPageNavigationConditionSatisfied(page: QuestionPageType, questionnaireTemp: QuestionnaireType) {
     const condition = page.content.showPageNavigationCondition;
-    const targetPageInList = questionnaireTemp.questionPages.find(qP => qP.pageName === condition?.byPageInNavigationTree?.pageName);
-    const existingAnswer = questionnaireUserSession.value!.questionnaireUserSessionAnswers.find(qUSA => qUSA.questionPageId === page.id);
+    const targetPageInList = questionnaireTemp.questionPages.find(qP => qP.pageName === condition.byPageInNavigationTree.pageName);
+    const existingAnswer = questionnaireUserSession.value!.questionnaireUserSessionAnswers.find(qUSA => qUSA.questionPageId === targetPageInList!.id);
 
     return (
         targetPageInList &&
         existingAnswer &&
-        existingAnswer.value === condition?.byPageInNavigationTree?.byQuestionAnswer.value
+        existingAnswer.value === condition.byPageInNavigationTree.byQuestionAnswer.value
     );
 }
 
@@ -156,7 +178,7 @@ function isResultPage(page: any): page is ResultPageType {
 
 function updateCurrentPageWithAnswer(questionnaireUserSessionAnswer: QuestionnaireUserSessionAnswer) {
     questionnaireUserSession.value!.questionnaireUserSessionAnswers =
-        questionnaireUserSession.value!.questionnaireUserSessionAnswers.filter(qUSA => qUSA.id === questionnaireUserSessionAnswer.id);
+        questionnaireUserSession.value!.questionnaireUserSessionAnswers.filter(qUSA => qUSA.id !== questionnaireUserSessionAnswer.id);
     questionnaireUserSession.value!.questionnaireUserSessionAnswers.push(questionnaireUserSessionAnswer);
 }
 
@@ -174,12 +196,15 @@ function handleOnQuestionPageNextClicked(temporaryAnswer: AnswerOptionType) {
         .find(qUSA =>
             qUSA.questionPageId === (currentPage as QuestionPageType).id);
 
-    if (existingAnswer && existingAnswer.value != temporaryAnswer.value) {
+    if (!existingAnswer) {
+        addOrEditAnswer(temporaryAnswer);
+    } else if (existingAnswer && existingAnswer.value != temporaryAnswer.value) {
         addOrEditAnswer(temporaryAnswer);
     } else {
         // answer unchanged , no need to update database
         navigateForward();
     }
+
 }
 
 function handleOnResultPagePreviousClicked() {
@@ -191,9 +216,13 @@ function handleOnResultPageResetQuestionnaireClicked() {
 }
 
 function setCurrentPage() {
-    console.log(questionnaire.questionPages);
     if (currentPageIndex.value < questionnaire.questionPages.length) {
-        Object.assign(currentPage, questionnaire.questionPages[currentPageIndex.value]);
+        const newCurrentPage = questionnaire.questionPages[currentPageIndex.value];
+        const newCurrentPageAnswer = questionnaireUserSession.value!.questionnaireUserSessionAnswers.find(qUSA => qUSA.questionPageId === newCurrentPage.id);
+        if (newCurrentPageAnswer) {
+            Object.assign(currentPageAnswer, newCurrentPageAnswer);
+        }
+        Object.assign(currentPage, newCurrentPage);
     } else {
         Object.assign(currentPage, questionnaire.resultPage);
     }
@@ -215,6 +244,8 @@ function setCurrentPageBySpecificIndex(index: number) {
 
 
 function navigateForward() {
+    updateNavigationWithAnswers();
+    
     const questionnaireTemp = questionnaire;
 
     if (!questionnaireTemp) {
@@ -228,7 +259,7 @@ function navigateForward() {
             label: "Recommendation",
             pageId: -1,
             pageName: "recommendationPage",
-            selectedAnswer: Factory.createDefaultAnswer()
+            selectedAnswer: Factory.createDefaultQuestionnaireUserSessionAnswer()
         }
         navigationTree.value.push(resultPageNavItem);
         currentNavigationItem.value = navigationTree.value[navigationTree.value.length - 1]
@@ -275,6 +306,8 @@ function navigateForward() {
         }
         newPageIndex++;
     }
+
+
 }
 
 function navigateBackwards() {
@@ -299,10 +332,6 @@ function navigateBackwards() {
         setCurrentPageBySpecificIndex(0);
     }
 }
-
-watch(questionnaire, (_newValue, _oldValue) => {
-    updateNavigationWithAnswers();
-});
 
 function updateNavigationWithAnswers() {
 

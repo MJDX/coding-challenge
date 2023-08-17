@@ -1,4 +1,4 @@
-import { ResultPageType, RecommendationOptionType, QuestionPageType, QuestionnaireType, NavigationTreeItemType, AnswerType, AnswerOptionType } from "./types";
+import { ResultPageType, RecommendationOptionType, QuestionPageType, QuestionnaireType, NavigationTreeItemType, AnswerOptionType, QuestionnaireUserSessionAnswer } from "./types";
 
 export const createDefaultResultPage: () => ResultPageType = () => ({
     title: "",
@@ -31,6 +31,7 @@ export const createDefaultRecommendationOption: () => RecommendationOptionType =
 export const createDefaultQuestionPage: () => QuestionPageType = () => ({
     id: -1,
     title: "",
+    image: "",
     pageName: "",
     pageType: "",
     content: {
@@ -55,34 +56,43 @@ export const createDefaultQuestionPage: () => QuestionPageType = () => ({
             options: [createDefaultAnswerOption()]
         }
     },
-    answer: {
-        id: -1,
-        value: ""
-    }
+    questionnaireUserSessionAnswers: []
 });
 
 export const createDefaultQuestionnaire: () => QuestionnaireType = () => ({
     id: -1,
     title: "",
+    image: "",
     questionnaireName: "",
-    questionPages:  [createDefaultQuestionPage()],
+    questionPages: [createDefaultQuestionPage()],
     resultPage: createDefaultResultPage()
 });
 
 export const createDefaultNavigationTreeItem: () => NavigationTreeItemType = () => ({
-    label:"",
+    label: "",
     selectedAnswer: {
         id: -1,
-        value: ""
+        value: "",
+        questionnaireUserSessionId: -1,
+        questionPageId: -1,
+        questionPage: createDefaultQuestionPage()
     },
     pageName: "",
     pageId: -1
 });
 
-export const createDefaultAnswer: () => AnswerType = () => ({
+export const createDefaultQuestionnaireUserSessionAnswer: () => QuestionnaireUserSessionAnswer = () => ({
     id: -1,
-    value: ""
+    value: "",
+    questionnaireUserSessionId: -1,
+    questionPageId: -1,
+    questionPage: createDefaultQuestionPage()
 });
+
+// export const createDefaultAnswer: () => AnswerType = () => ({
+//     id: -1,
+//     value: ""
+// });
 
 export const createDefaultAnswerOption: () => AnswerOptionType = () => ({
     label: "",

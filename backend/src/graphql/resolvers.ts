@@ -81,8 +81,12 @@ const resolvers = {
         where: {
           questionnaireId,
           userId: { not: userId },
-          sharable: true,
+          sharable: true
         },
+        include: {
+          questionnaire: true,
+          user: true,
+        }
       });
       return sharableSessions;
     },
@@ -95,11 +99,15 @@ const resolvers = {
         include: {
           user: true,
           questionnaire: {
-            include : {
-              questionPages :true
+            include: {
+              questionPages: true
             }
           },
-          questionnaireUserSessionAnswers: true,
+          questionnaireUserSessionAnswers: {
+            include: {
+              questionPage: true
+            }
+          },
         },
       });
     },
@@ -241,21 +249,36 @@ const resolvers = {
         throw new Error('User not authenticated');
       }
 
-      const where = {
-        id: args.id,
-      };
+      let sessionAnswer;
 
-      const upsertData = {
-        questionnaireUserSessionId: args.questionnaireUserSessionId,
-        questionPageId: args.questionPageId,
-        value: args.value,
-      };
+      if (args.id === undefined || args.id === null) {
+        // No ID provided, create a new answer
+        const createData = {
+          questionnaireUserSessionId: args.questionnaireUserSessionId,
+          questionPageId: args.questionPageId,
+          value: args.value,
+        };
 
-      const sessionAnswer = await prisma.questionnaireUserSessionAnswer.upsert({
-        where,
-        update: { value: args.value },
-        create: upsertData,
-      });
+        sessionAnswer = await prisma.questionnaireUserSessionAnswer.create({
+          data: createData,
+          include: {
+            questionPage: true
+          }
+        });
+      } else {
+        // ID provided, update existing answer
+        const updateData = {
+          value: args.value,
+        };
+
+        sessionAnswer = await prisma.questionnaireUserSessionAnswer.update({
+          where: { id: args.id },
+          data: updateData,
+          include: {
+            questionPage: true
+          }
+        });
+      }
 
       return sessionAnswer;
     },
@@ -283,14 +306,14 @@ const resolvers = {
       }
     },
 
-    removeQuestionnaireUserSessionAnswersBySessionId: async (_: any, { sessionId }: { sessionId: number }) => {
+    removeQuestionnaireUserSessionAnswersBySessionId: async (_: any, { questionnaireUserSessionId }: { questionnaireUserSessionId: number }) => {
       try {
-        const removedAnswers = await prisma.questionnaireUserSessionAnswer.deleteMany({
-          where: { questionnaireUserSessionId: sessionId },
+        const response = await prisma.questionnaireUserSessionAnswer.deleteMany({
+          where: { questionnaireUserSessionId: questionnaireUserSessionId },
         });
-        return removedAnswers;
+        return response.count;
       } catch (error) {
-        throw new Error(`Error removing answers for session ID ${sessionId}: ${error}`);
+        throw new Error(`Error removing answers for session ID ${questionnaireUserSessionId}: ${error}`);
       }
     },
   },
