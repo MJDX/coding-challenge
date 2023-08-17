@@ -41,6 +41,7 @@ const typeDefs = `#graphql
     questionnaireUserSessionId: Int
     questionnaireUserSession: QuestionnaireUserSession
     questionPage: QuestionPage
+    questionPageId: Int
     value: String
   }
 

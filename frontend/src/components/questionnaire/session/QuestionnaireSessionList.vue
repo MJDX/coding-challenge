@@ -44,7 +44,7 @@ import { QuestionnaireUserSession } from '../../../types/types';
 import QuestionnaireSessionListItem from './QuestionnaireSessionListItem.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../../../store/store';
-import { CREATE_QUESTIONNAIRE_USER_SESSION,GET_QUESTIONNAIRE_USER_SESSIONS_BY_USER, GET_SHARABLE_QUESTIONNAIRE_USER_SESSIONS_WITHOUT_OWNED } from '../../../services/queries/graphqlAPI';
+import { CREATE_QUESTIONNAIRE_USER_SESSION, GET_QUESTIONNAIRE_USER_SESSIONS_BY_USER, GET_SHARABLE_QUESTIONNAIRE_USER_SESSIONS_WITHOUT_OWNED } from '../../../services/queries/graphqlAPI';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -54,32 +54,26 @@ const route = useRoute();
 const sessionTitle = ref('');
 
 
-const questionnaireId = Number(route.params.questionnaireId);
-const userId = Number(authStore.user?.id);
 
 const questionnaireCurrentUserSessions = ref<QuestionnaireUserSession[]>([]);
 const questionnaireCommunitySharedSessions = ref<QuestionnaireUserSession[]>([]);
 
+const questionnaireId = Number(route.params.questionnaireId);
+const userId = Number(authStore.user?.id);
 async function loadData() {
     questionnaireCurrentUserSessions.value = await GET_QUESTIONNAIRE_USER_SESSIONS_BY_USER(questionnaireId, userId);
-
-    console.log(questionnaireCurrentUserSessions.value);
-    
-
     questionnaireCommunitySharedSessions.value = await GET_SHARABLE_QUESTIONNAIRE_USER_SESSIONS_WITHOUT_OWNED(questionnaireId, userId);
-    
-    console.log(questionnaireCommunitySharedSessions.value);
 }
 
 
 
 async function addNewQuestionnaireUserSession() {
-    if(sessionTitle.value === ''){
+    if (sessionTitle.value === '') {
         alert('Session Title cannot be empty')
         return
     }
     // create a new empty session in backend
-    const createdSession = await CREATE_QUESTIONNAIRE_USER_SESSION(userId, sessionTitle.value, questionnaireId );
+    const createdSession = await CREATE_QUESTIONNAIRE_USER_SESSION(userId, sessionTitle.value, questionnaireId);
 
     // use the newly created session's id to navigate to QuestionnaireSessionEdit
     navigateToQuestionnaireSessionEdit(questionnaireId, createdSession.id);

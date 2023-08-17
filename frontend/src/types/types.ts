@@ -86,10 +86,16 @@ export type NavigationTreeItemType = {
 export type QuestionnaireUserSession = {
     id: number
     title: string
-    userId: number
+    user: User
     sharable: boolean
-    questionnaireId: number
+    questionnaire: QuestionnaireType
     questionnaireUserSessionAnswers: QuestionnaireUserSessionAnswer[]
+};
+
+export type User = {
+    id: number
+    username: string
+    email: string
 };
 
 export type QuestionnaireUserSessionAnswer = {

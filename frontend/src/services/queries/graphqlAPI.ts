@@ -36,11 +36,16 @@ export const GET_QUESTIONNAIRE_USER_SESSIONS_BY_USER = async (questionnaireId: n
           questionnaireUserSessionsByUser(questionnaireId: $questionnaireId, userId: $userId) {
             id
             title
-            userId
+            user{
+              id
+              username
+              email
+            }
             sharable
             questionnaire {
               id
               title
+              image
             }
           }
         }
@@ -140,6 +145,7 @@ export const GET_FULL_QUESTIONNAIRE_USER_SESSION = async (questionnaireUserSessi
               questionnaire {
                 id
                 title
+                image
                 questionnaireName
                 questionPages {
                   id
@@ -153,6 +159,12 @@ export const GET_FULL_QUESTIONNAIRE_USER_SESSION = async (questionnaireUserSessi
               questionnaireUserSessionAnswers {
                 id
                 questionnaireUserSessionId
+                questionPage {
+                  id
+                  pageName
+                  pageType
+                  title
+                }
                 questionPageId
                 value
               }
@@ -277,7 +289,7 @@ export const CREATE_QUESTIONNAIRE_USER_SESSION = async (userId: number, title: s
     }
 };
 
-export const ADD_OR_UPDATE_ANSWER = async (id: number, questionnaireUserSessionId: number, questionPageId: number, value: string) => {
+export const ADD_OR_UPDATE_ANSWER = async (id: number | undefined, questionnaireUserSessionId: number, questionPageId: number, value: string) => {
     try {
         const response = await apolloClient.mutate({
             mutation: gql`

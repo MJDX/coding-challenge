@@ -55,7 +55,13 @@ const resolvers = {
         questionnaireId,
         userId,
       };
-      return await prisma.questionnaireUserSession.findMany({ where });
+      return await prisma.questionnaireUserSession.findMany({
+        where,
+        include: {
+          questionnaire: true,
+          user: true,
+        }
+      });
     },
     sharableQuestionnaireUserSessions: async (
       _: any,
@@ -87,7 +93,12 @@ const resolvers = {
       return await prisma.questionnaireUserSession.findUnique({
         where: { id: questionnaireUserSessionId },
         include: {
-          questionnaire: true,
+          user: true,
+          questionnaire: {
+            include : {
+              questionPages :true
+            }
+          },
           questionnaireUserSessionAnswers: true,
         },
       });
@@ -261,7 +272,7 @@ const resolvers = {
 
       return updatedSession;
     },
-    removeQuestionnaireUserSessionAnswer: async (_ : any, { id } : { id : number} ) => {
+    removeQuestionnaireUserSessionAnswer: async (_: any, { id }: { id: number }) => {
       try {
         const removedAnswer = await prisma.questionnaireUserSessionAnswer.delete({
           where: { id },
@@ -272,7 +283,7 @@ const resolvers = {
       }
     },
 
-    removeQuestionnaireUserSessionAnswersBySessionId: async (_ : any, { sessionId } : { sessionId : number}) => {
+    removeQuestionnaireUserSessionAnswersBySessionId: async (_: any, { sessionId }: { sessionId: number }) => {
       try {
         const removedAnswers = await prisma.questionnaireUserSessionAnswer.deleteMany({
           where: { questionnaireUserSessionId: sessionId },

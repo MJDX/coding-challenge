@@ -28,139 +28,91 @@ import ResultPage from './resultPage/ResultPage.vue'
 import Navigation from './navigation/Navigation.vue';
 import LoadingSpinner from '../../custom/LoadingSpinner.vue';
 // import { AddAnswer, DeleteAnswersByQuestionnaireId, EditAnswer, GetQuestionnaireByQuestionnaireName } from '../../../services/queries/graphqlAPI';
-import { QuestionnaireType, NavigationTreeItemType, QuestionPageType, ResultPageType, AnswerOptionType, QuestionnaireUserSessionAnswer } from '../../../types/types';
+import { QuestionnaireType, NavigationTreeItemType, QuestionPageType, ResultPageType, AnswerOptionType, QuestionnaireUserSessionAnswer, QuestionnaireUserSession } from '../../../types/types';
 import * as Factory from '../../../types/factory';
+import { useRouter, useRoute } from 'vue-router';
+import { useAuthStore } from '../../../store/store';
+import { GET_FULL_QUESTIONNAIRE_USER_SESSION, ADD_OR_UPDATE_ANSWER, REMOVE_ANSWERS_BY_SESSION_ID } from '../../../services/queries/graphqlAPI';
 
-const props = defineProps({
-    questionnaireName: {
-        type: String,
-        default: "",
-    },
-});
+const authStore = useAuthStore();
+const router = useRouter();
+
+const route = useRoute();
 
 const loading = ref(true);
-const questionnaire: QuestionnaireType = reactive(Factory.createDefaultQuestionnaire());
+const questionnaire = reactive<QuestionnaireType>(Factory.createDefaultQuestionnaire());
 const navigationTree = ref<NavigationTreeItemType[]>([]);
 const currentNavigationItem = ref<NavigationTreeItemType>();
 const currentPage: QuestionPageType | ResultPageType = reactive(Factory.createDefaultQuestionPage());
 const currentPageIndex = ref<number>(0);
 const progress = ref<number>(0);
 
-fetchQuestionnaire(props.questionnaireName)
+const questionnaireId = Number(route.params.questionnaireId);
+const sessionId = Number(route.params.sessionId);
+const userId = Number(authStore.user?.id);
+const questionnaireUserSession = ref<QuestionnaireUserSession>();
 
-function fetchQuestionnaire(questionnaireName: string) {
-    try {
-        console.log('Loading Questionnaire...');
+fetchFullSession()
 
-        GetQuestionnaireByQuestionnaireName(questionnaireName)
-            .then((data) => {
-                loading.value = false;
-                questionnaire.id = data.questionnaireByQuestionnaireName.id;
-                questionnaire.title = data.questionnaireByQuestionnaireName.title;
-                questionnaire.questionnaireName = data.questionnaireByQuestionnaireName.questionnaireName;
-                questionnaire.questionPages = data.questionnaireByQuestionnaireName.questionPages;
-                questionnaire.resultPage = data.questionnaireByQuestionnaireName.resultPage;
-                setCurrentPageBySpecificIndex(0);
-                clearNavigationTree()
-                if (isQuestionPage(currentPage)) {
-                    pushPageToNavigationTree(currentPage);
-                    currentNavigationItem.value = navigationTree.value[navigationTree.value.length - 1]
-                }
-            })
-            .catch((error) => {
-                console.error("Error occurred:", error);
-            });
-    } catch (error) {
-        console.error('Error while fetching data:', error);
-        throw error;
+async function fetchFullSession() {
+    console.log('Loading Questionnaire...');
+
+    questionnaireUserSession.value = await GET_FULL_QUESTIONNAIRE_USER_SESSION(sessionId);
+    loading.value = false;
+    console.log(questionnaireUserSession.value);
+
+    Object.assign(questionnaire, questionnaireUserSession.value?.questionnaire);
+    console.log(questionnaire);
+    setCurrentPageBySpecificIndex(0);
+    clearNavigationTree()
+    if (isQuestionPage(currentPage)) {
+        pushPageToNavigationTree(currentPage);
+        currentNavigationItem.value = navigationTree.value[navigationTree.value.length - 1]
     }
+
 }
 
 
-function addAnswer(
-    answer: AnswerOptionType,
-    onsuccess?: (questionnaireUserSessionAnswer: QuestionnaireUserSessionAnswer) => void,
-    onfailure?: (error: Error) => void) {
-    try {
-        const addAnswerInput = {
-            value: answer.value,
-            questionPageId: (currentPage as QuestionPageType).id
-        }
-        AddAnswer(addAnswerInput)
-            .then((data) => {
-                updateCurrentPageWithAnswer(data.addAnswer);
-                if (onsuccess) {
-                    onsuccess(data.addAnswer);
-                }
-            })
-            .catch((error) => {
-                console.error("Error occurred:", error);
-                if (onfailure) {
-                    onfailure(error);
-                }
-            });
+async function addOrEditAnswer(
+    answer: AnswerOptionType) {
 
-    } catch (error) {
-        console.error('Error while fetching data:', error);
-        throw error;
-    }
-}
-function editAnswer(
-    newQuestionnaireUserSessionAnswer: AnswerOptionType,
-    existingQuestionnaireUserSessionAnswer: QuestionnaireUserSessionAnswer,
-    onsuccess?: (editedAnswer: QuestionnaireUserSessionAnswer) => void,
-    onfailure?: (error: Error) => void
-) {
-    try {
-        const editAnswerInput = {
-            value: newQuestionnaireUserSessionAnswer.value,
-            questionPageId: (currentPage as QuestionPageType).id
-        };
+    const currentAnswer = questionnaireUserSession.value?.questionnaireUserSessionAnswers
+        .find(qUSA => qUSA.questionPageId === (currentPage as QuestionPageType).id);
 
-        EditAnswer(existingQuestionnaireUserSessionAnswer.id, editAnswerInput)
-            .then((editedAnswer) => {
-                updateCurrentPageWithAnswer(editedAnswer.editAnswer);
-                if (onsuccess) {
-                    onsuccess(editedAnswer.editAnswer);
-                }
-            })
-            .catch((error) => {
-                console.error('Error occurred:', error);
-                if (onfailure) {
-                    onfailure(error);
-                }
-            });
-    } catch (error) {
-        console.error('Error while editing answer:', error);
-        throw error;
+
+    const response = await ADD_OR_UPDATE_ANSWER(
+        currentAnswer?.id,
+        questionnaireUserSession.value!.id,
+        (currentPage as QuestionPageType).id,
+        answer.value);
+
+    if (response) {
+        updateCurrentPageWithAnswer(response);
+        navigateForward();
     }
+
+
+
 }
 
-function deleteAllAnswers() {
-    try {
+async function deleteAllAnswers() {
 
-        DeleteAnswersByQuestionnaireId(questionnaire.id)
-            .then((_data) => {
-                fetchQuestionnaire(props.questionnaireName)
-            })
-            .catch((error) => {
-                console.error("Error occurred:", error);
-            });
-    } catch (error) {
-        console.error('Error while fetching data:', error);
-        throw error;
+    const response = await REMOVE_ANSWERS_BY_SESSION_ID(questionnaireUserSession.value!.id);
+    if(response){
+        fetchFullSession();
     }
+
 }
 
 function isPageNavigationConditionSatisfied(page: QuestionPageType, questionnaireTemp: QuestionnaireType) {
     const condition = page.content.showPageNavigationCondition;
     const targetPageInList = questionnaireTemp.questionPages.find(qP => qP.pageName === condition?.byPageInNavigationTree?.pageName);
+    const existingAnswer = questionnaireUserSession.value!.questionnaireUserSessionAnswers.find(qUSA => qUSA.questionPageId === page.id);
 
     return (
         targetPageInList &&
-        targetPageInList.questionnaireUserSessionAnswers &&
-        targetPageInList.questionnaireUserSessionAnswers[0] &&
-        targetPageInList.questionnaireUserSessionAnswers[0].value === condition?.byPageInNavigationTree?.byQuestionAnswer.value
+        existingAnswer &&
+        existingAnswer.value === condition?.byPageInNavigationTree?.byQuestionAnswer.value
     );
 }
 
@@ -172,18 +124,20 @@ function clearNavigationTree() {
 function pushPageToNavigationTree(questionPage: QuestionPageType) {
     var navList = navigationTree.value
     if (navList == null) {
+        const existingAnswer = questionnaireUserSession.value!.questionnaireUserSessionAnswers.find(qUSA => qUSA.questionPageId === questionPage.id);
         navList = [{
             label: questionPage.title,
             pageId: questionPage.id,
             pageName: questionPage.pageName,
-            selectedAnswer: questionPage.questionnaireUserSessionAnswers[0]
+            selectedAnswer: existingAnswer!
         }]
     } else {
+        const existingAnswer = questionnaireUserSession.value!.questionnaireUserSessionAnswers.find(qUSA => qUSA.questionPageId === questionPage.id);
         navList.push({
             label: questionPage.title,
             pageId: questionPage.id,
             pageName: questionPage.pageName,
-            selectedAnswer: questionPage.questionnaireUserSessionAnswers[0]
+            selectedAnswer: existingAnswer!
         });
     }
     navigationTree.value = reactive<NavigationTreeItemType[]>(navList)
@@ -201,7 +155,9 @@ function isResultPage(page: any): page is ResultPageType {
 }
 
 function updateCurrentPageWithAnswer(questionnaireUserSessionAnswer: QuestionnaireUserSessionAnswer) {
-    questionnaire.questionPages[currentPageIndex.value].questionnaireUserSessionAnswers[0] = questionnaireUserSessionAnswer;
+    questionnaireUserSession.value!.questionnaireUserSessionAnswers =
+        questionnaireUserSession.value!.questionnaireUserSessionAnswers.filter(qUSA => qUSA.id === questionnaireUserSessionAnswer.id);
+    questionnaireUserSession.value!.questionnaireUserSessionAnswers.push(questionnaireUserSessionAnswer);
 }
 
 function handleOnQuestionPagePreviousClicked() {
@@ -213,37 +169,16 @@ function handleOnQuestionPageNextClicked(temporaryAnswer: AnswerOptionType) {
         alert("Please select an option");
         return;
     }
-    console.log("handleOnQuestionPageNextClicked");
-    console.log(temporaryAnswer);
 
+    const existingAnswer = questionnaireUserSession.value?.questionnaireUserSessionAnswers
+        .find(qUSA =>
+            qUSA.questionPageId === (currentPage as QuestionPageType).id);
 
-    if ((currentPage as QuestionPageType).questionnaireUserSessionAnswers) {
-        if ((currentPage as QuestionPageType).questionnaireUserSessionAnswers[0].value != temporaryAnswer.value) {
-            editAnswer(temporaryAnswer, (currentPage as QuestionPageType).questionnaireUserSessionAnswers[0],
-                () => {
-                    // success
-                    navigateForward();
-                },
-                () => {
-                    // error
-                    // todo
-
-                });
-        } else {
-            // answer unchanged , no need to update database
-            navigateForward();
-        }
+    if (existingAnswer && existingAnswer.value != temporaryAnswer.value) {
+        addOrEditAnswer(temporaryAnswer);
     } else {
-        addAnswer(temporaryAnswer,
-            () => {
-                // success
-                navigateForward();
-            },
-            () => {
-                // error
-                // todo
-
-            });
+        // answer unchanged , no need to update database
+        navigateForward();
     }
 }
 
@@ -373,9 +308,13 @@ function updateNavigationWithAnswers() {
 
     if (navigationTree.value) {
         navigationTree.value.forEach((navItem, index, list) => {
+            if (!questionnaire) {
+                return;
+            }
             const correspondingPage = (questionnaire.questionPages as QuestionPageType[]).find(pageItem => pageItem.pageName === navItem.pageName);
             if (correspondingPage) {
-                navItem.selectedAnswer = correspondingPage.questionnaireUserSessionAnswers[0];
+                const existingAnswer = questionnaireUserSession.value?.questionnaireUserSessionAnswers.find(qUSA => qUSA.questionPageId === correspondingPage.id);
+                navItem.selectedAnswer = existingAnswer!;
             }
             list[index] = navItem
         });
