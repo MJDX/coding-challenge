@@ -21,7 +21,7 @@
             <div class="flex justify-end">
                 <Button class="mr-8" :buttonName="'PreviousQuestion'" :buttonLabel="'Previous'"
                     @button-click-event="handleButtonClickEvent" />
-                <Button class="mr-4" :buttonName="'ResetQuestionnaire'" :buttonLabel="'Reset Questionnaire'"
+                <Button v-if="!viewMode" class="mr-4" :buttonName="'ResetQuestionnaire'" :buttonLabel="'Reset Questionnaire'"
                     @button-click-event="handleButtonClickEvent" />
             </div>
 
@@ -48,6 +48,10 @@ const {resultPage,questionnaireUserSession} = defineProps({
     questionnaireUserSession: {
         type: Object as () => QuestionnaireUserSession,
         default: null,
+    },
+    viewMode : {
+        type: Boolean,
+        default: false,
     }
 });
 

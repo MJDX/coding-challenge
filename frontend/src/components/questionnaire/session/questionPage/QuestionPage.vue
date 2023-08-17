@@ -62,6 +62,10 @@ const props = defineProps({
         type: Object as () => NavigationTreeItemType[] | null,
         default: null,
     },
+    viewMode : {
+        type: Boolean,
+        default: false,
+    }
 });
 
 const temporaryAnswer = ref<AnswerOptionType>();
@@ -82,6 +86,9 @@ watch(props.page, (newValue, _oldValue) => {
 
 
 const toggleAnswerClicked = (answerData: AnswerOptionType) => {
+    if(props.viewMode){
+        return
+    }
     temporaryAnswer.value = answerData;
 
 };
