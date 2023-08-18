@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "build": "npm i",
     "lint": "eslint -c .eslintrc.yml --ext .ts .",
     "fix": "eslint --fix -c .eslintrc.yml --ext .ts ."
   },
@@ -36,6 +37,7 @@
     "express-rate-limit": "^6.9.0",
     "graphql": "^16.7.1",
     "helmet": "^7.0.0",
+    "jest": "^29.6.2",
     "jsonwebtoken": "^9.0.1"
   },
   "prettier": {

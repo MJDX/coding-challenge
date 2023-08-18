@@ -136,7 +136,7 @@ const resolvers = {
         }
 
         const accessToken = jwt.sign({ userId: user.id, userEmail: user.email }, accessSecretKey, {
-          expiresIn: '15m'
+          expiresIn: '1d'
         });
 
         return { accessToken };
@@ -168,7 +168,7 @@ const resolvers = {
 
       // Generate access token
       const accessToken = jwt.sign({ userId: user.id, userEmail: user.email }, accessSecretKey, {
-        expiresIn: '15m'
+        expiresIn: '1d'
       });
 
       // Generate refresh token
@@ -212,7 +212,7 @@ const resolvers = {
 
       // Generate access token
       const accessToken = jwt.sign({ userId: user.id, userEmail: user.email }, accessSecretKey, {
-        expiresIn: '15m'
+        expiresIn: '1d'
       });
 
       // Generate refresh token

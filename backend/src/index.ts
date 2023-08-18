@@ -49,18 +49,29 @@ async function main() {
   app.use(
     expressMiddleware(server, {
       context: async ({ req }) => {
-        const accessToken = req.headers.authorization?.replace("Bearer ", "") || ''; 
-        const accessSecretKey = process.env.ACCESS_SECRET_KEY ; 
+
+        const isRefreshTokenRequest = req.body.operationName === 'RefreshToken';
+        if (isRefreshTokenRequest) {
+          return {}; 
+        }
+
+        const accessToken = req.headers.authorization?.replace("Bearer ", "") || '';
+        const accessSecretKey = process.env.ACCESS_SECRET_KEY;
         if (!accessSecretKey) {
           return {};
         }
         try {
           const decodedToken = jwt.verify(accessToken, accessSecretKey) as JwtPayload;
           const userId = decodedToken.userId;
-          return { user: { userId } }; 
+          return { user: { userId } };
         } catch (error) {
           // console.error(error)
-          return {}; 
+          if (error instanceof jwt.TokenExpiredError) {
+            // throw new Error('Token has expired');
+            // res.status(401).json({ code: 'TOKEN_EXPIRED',message: 'Token has expired' });
+            throw new Error('TOKEN_EXPIRED');
+          }
+          return {};
         }
       },
     }),
